@@ -1,9 +1,11 @@
 package com.yigitkula.studentforum.profile
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import com.yigitkula.studentforum.R
+import com.yigitkula.studentforum.home.HomeActivity
 import com.yigitkula.studentforum.utils.BottomNavigationViewHelper
 import kotlinx.android.synthetic.main.activity_profile_setting.*
 import kotlinx.android.synthetic.main.activity_profile_setting.bottomNavigationView
@@ -38,6 +40,18 @@ class ProfileSettingActivity : AppCompatActivity() {
             transaction.addToBackStack("addedProfileFragment")
 
             transaction.commit()
+        }
+
+        textViewChangePassword.setOnClickListener {
+            val intent = Intent(this, ChangePasswordActivity::class.java)
+            this.startActivity(intent)
+            finish()
+        }
+
+        textViewChangeEmail.setOnClickListener {
+            val intent = Intent(this, ChangeEmailActivity::class.java)
+            this.startActivity(intent)
+            finish()
         }
 
 

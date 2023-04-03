@@ -6,11 +6,8 @@ import android.os.Bundle
 import android.view.View
 import com.yigitkula.studentforum.R
 import com.yigitkula.studentforum.utils.BottomNavigationViewHelper
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.activity_main.bottomNavigationView
 import kotlinx.android.synthetic.main.activity_profile.*
-import kotlinx.android.synthetic.main.activity_profile_setting.*
-import kotlinx.android.synthetic.main.fragment_profile_edit.*
+import kotlinx.android.synthetic.main.activity_profile_setting.bottomNavigationView
 
 class ProfileActivity : AppCompatActivity() {
 
@@ -27,8 +24,8 @@ class ProfileActivity : AppCompatActivity() {
 
     fun setupNavigationView(){
         BottomNavigationViewHelper.setupNavigation(this,bottomNavigationView)
-        var menu=bottomNavigationView.menu
-        var menuItem=menu.getItem(ACTIVITY_NO)
+        var menu = bottomNavigationView.menu
+        var menuItem = menu.getItem(ACTIVITY_NO)
         menuItem.setChecked(true)
     }
 

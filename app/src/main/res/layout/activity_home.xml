@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".home.MainActivity">
+    tools:context=".home.HomeActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/mainContainer"
@@ -43,7 +43,7 @@
                     android:background="@android:color/background_light">
 
                     <ImageView
-                        android:id="@+id/imgLogo"
+                        android:id="@+id/imgLogoSearch"
                         android:layout_width="264dp"
                         android:layout_height="42dp"
                         android:cropToPadding="false"
@@ -61,7 +61,7 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/imgLogo">
+                        app:layout_constraintTop_toBottomOf="@+id/imgLogoSearch">
 
                     </View>
 
@@ -70,18 +70,6 @@
             </androidx.appcompat.widget.Toolbar>
 
         </com.google.android.material.appbar.AppBarLayout>
-        <TextView
-            android:id="@+id/textView6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Your Questions"
-            android:textStyle="bold"
-            android:textSize="18sp"
-            android:textColor="@color/purple_200"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/appbar" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/rcViewLayout"
@@ -92,19 +80,20 @@
             app:layout_constraintBottom_toTopOf="@+id/view2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView6">
+            app:layout_constraintTop_toBottomOf="@+id/appbar">
 
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rcViewYourQues"
                 android:layout_width="409dp"
                 android:layout_height="627dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="30dp"
                 android:layout_marginBottom="8dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                tools:listitem="@layout/rv_list_item" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.google.android.material.bottomnavigation.BottomNavigationView

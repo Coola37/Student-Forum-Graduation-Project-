@@ -22,7 +22,7 @@
             android:textColor="@color/black"
             android:textSize="18sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/accountSettings" />
+            app:layout_constraintTop_toBottomOf="@+id/textViewChangeEmail" />
 
         <ImageView
             android:id="@+id/imageView5"
@@ -40,7 +40,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="6dp"
-            android:text="Ayarlar"
+            android:text="Settings"
             android:textColor="@color/black"
             android:textSize="18sp"
             android:textStyle="bold"
@@ -60,15 +60,15 @@
         </View>
 
         <TextView
-            android:id="@+id/accountSettings"
+            android:id="@+id/textViewChangeEmail"
             android:layout_width="383dp"
             android:layout_height="25dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="48dp"
-            android:text="Account Settings"
+            android:text="Change E-Mail"
             android:textColor="@color/black"
             android:textSize="18sp"
-            android:textStyle="bold"
+            android:textStyle="normal"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/view" />
 
@@ -116,7 +116,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/bottom_navigation_menu">
     </com.google.android.material.bottomnavigation.BottomNavigationView>
-
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

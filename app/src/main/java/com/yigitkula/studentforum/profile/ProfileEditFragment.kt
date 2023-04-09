@@ -5,13 +5,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.yigitkula.studentforum.R
 import de.hdodenhof.circleimageview.CircleImageView
-import kotlinx.android.synthetic.main.activity_profile.*
-import kotlinx.android.synthetic.main.fragment_profile_edit.view.*
-
 
 class ProfileEditFragment : Fragment() {
+
+    private lateinit var imgClose: ImageView
 
     private lateinit var circleProfileImageFragment: CircleImageView
 
@@ -19,9 +20,11 @@ class ProfileEditFragment : Fragment() {
 
         val view = inflater!!.inflate(R.layout.fragment_profile_edit, container, false)
 
+        imgClose=view.findViewById(R.id.imgClose)
+
         circleProfileImageFragment = view.findViewById(R.id.circleProfileImg)
 
-        view.imgClose.setOnClickListener {
+       imgClose.setOnClickListener {
             activity?.onBackPressed()
         }
 

@@ -4,18 +4,37 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.yigitkula.studentforum.R
-import com.yigitkula.studentforum.home.HomeActivity
 import com.yigitkula.studentforum.utils.BottomNavigationViewHelper
-import kotlinx.android.synthetic.main.activity_profile_setting.*
-import kotlinx.android.synthetic.main.activity_profile_setting.bottomNavigationView
 
 class ProfileSettingActivity : AppCompatActivity() {
+
+    private lateinit var profileSettingsRoot: ConstraintLayout
+    private lateinit var signOut: TextView
+    private lateinit var textViewSettinggsEditProfile: TextView
+    private lateinit var textViewChangePassword: TextView
+    private lateinit var textViewChangeEmail: TextView
+    private lateinit var imageView5: ImageView
+    private lateinit var bottomNavigationView: BottomNavigationView
+
+
+
     private val ACTIVITY_NO=4
     private val TAG="ProfileActivity"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile_setting)
+        profileSettingsRoot=findViewById(R.id.profileSettingsRoot)
+        signOut=findViewById(R.id.signOut)
+        textViewChangeEmail=findViewById(R.id.textViewChangeEmail)
+        textViewChangePassword=findViewById(R.id.textViewChangePassword)
+        textViewSettinggsEditProfile=findViewById(R.id.textViewSettinggsEditProfile)
+        imageView5=findViewById(R.id.imageView5)
+        bottomNavigationView=findViewById(R.id.bottomNavigationView)
 
         activityNavigation()
         setupNavigationView()
@@ -28,7 +47,7 @@ class ProfileSettingActivity : AppCompatActivity() {
             profileSettingsRoot.visibility= View.GONE
             var transaction=supportFragmentManager.beginTransaction()
             transaction.replace(R.id.profileSettingsContainer,SignOutFragment())
-            transaction.addToBackStack("editProfileFragmentEklendi")
+            transaction.addToBackStack("addedEditProfileFragment")
 
             transaction.commit()
         }
@@ -57,11 +76,6 @@ class ProfileSettingActivity : AppCompatActivity() {
 
     }
 
-    override fun onBackPressed() {
-        profileSettingsRoot.visibility=View.VISIBLE
-        super.onBackPressed()
-    }
-
     fun setupToolbar(){
         imageView5.setOnClickListener {
             onBackPressed()
@@ -74,5 +88,10 @@ class ProfileSettingActivity : AppCompatActivity() {
         var menuItem=menu.getItem(ACTIVITY_NO)
         menuItem.setChecked(true)
 
+    }
+
+    override fun onBackPressed() {
+        profileSettingsRoot.visibility=View.VISIBLE
+        super.onBackPressed()
     }
 }

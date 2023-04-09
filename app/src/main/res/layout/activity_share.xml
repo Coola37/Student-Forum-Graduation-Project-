@@ -25,7 +25,7 @@
             app:layout_constraintTop_toBottomOf="@+id/appbarShare" />
 
         <EditText
-            android:id="@+id/editTextCourseName"
+            android:id="@+id/editTextCreateName"
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:layout_marginTop="24dp"
@@ -46,10 +46,10 @@
             android:text="Task"
             android:textSize="18sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editTextCourseName" />
+            app:layout_constraintTop_toBottomOf="@+id/editTextCreateName" />
 
         <EditText
-            android:id="@+id/editTextTask"
+            android:id="@+id/editTextCreateSurname"
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:layout_marginTop="8dp"
@@ -71,10 +71,10 @@
             android:text="Problem"
             android:textSize="18sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editTextTask" />
+            app:layout_constraintTop_toBottomOf="@+id/editTextCreateSurname" />
 
         <EditText
-            android:id="@+id/editTextProblem"
+            android:id="@+id/editTextCreateUsername"
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:layout_marginTop="24dp"
@@ -96,7 +96,7 @@
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editTextProblem" />
+            app:layout_constraintTop_toBottomOf="@+id/editTextCreateUsername" />
 
 
         <com.google.android.material.appbar.AppBarLayout
@@ -177,7 +177,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.341"
             app:layout_constraintStart_toEndOf="@+id/textView18"
-            app:layout_constraintTop_toBottomOf="@+id/editTextProblem"
+            app:layout_constraintTop_toBottomOf="@+id/editTextCreateUsername"
             app:srcCompat="@drawable/ic_add" />
 
         <com.google.android.material.button.MaterialButton

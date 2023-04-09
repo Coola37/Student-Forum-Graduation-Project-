@@ -2,17 +2,21 @@ package com.yigitkula.studentforum.search
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.yigitkula.studentforum.R
 import com.yigitkula.studentforum.utils.BottomNavigationViewHelper
-import kotlinx.android.synthetic.main.activity_search.*
 
 class SearchActivity : AppCompatActivity() {
+
+    private lateinit var bottomNavigationView:BottomNavigationView
+
     private val ACTIVITY_NO=1
     private val TAG="SearchActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
+        bottomNavigationView=findViewById(R.id.bottomNavigationView)
 
         setupNavigationView()
     }

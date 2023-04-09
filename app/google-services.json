@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "559493220406",
+    "project_id": "studentforum-396e5",
+    "storage_bucket": "studentforum-396e5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:559493220406:android:324d18d65f7f98ce0e7097",
+        "android_client_info": {
+          "package_name": "com.yigitkula.studentforum"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "559493220406-cpmr0kummbnn82sgfqf1gt4b5b58ac9a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD60pvqbhC9KwBedPXmc8oO7FGOu1HOATI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "559493220406-cpmr0kummbnn82sgfqf1gt4b5b58ac9a.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

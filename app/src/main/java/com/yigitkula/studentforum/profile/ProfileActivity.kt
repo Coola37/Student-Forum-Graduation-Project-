@@ -4,19 +4,28 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import androidx.constraintlayout.widget.ConstraintLayout
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.button.MaterialButton
 import com.yigitkula.studentforum.R
 import com.yigitkula.studentforum.utils.BottomNavigationViewHelper
-import kotlinx.android.synthetic.main.activity_profile.*
-import kotlinx.android.synthetic.main.activity_profile_setting.bottomNavigationView
 
 class ProfileActivity : AppCompatActivity() {
+
+    private lateinit var bottomNavigationView: BottomNavigationView
+    private lateinit var buttonProfileEdit: MaterialButton
+    private lateinit var buttonSettings: MaterialButton
+    private lateinit var profileRoot: ConstraintLayout
 
     private val ACTIVITY_NO=4
     private val TAG="ProfileActivity"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
-
+        bottomNavigationView=findViewById(R.id.bottomNavigationView)
+        buttonProfileEdit=findViewById(R.id.buttonProfileEdit)
+        buttonSettings=findViewById(R.id.buttonSettings)
+        profileRoot=findViewById(R.id.profileRoot)
 
         setupNavigationView()
         setupButtons()
@@ -46,6 +55,7 @@ class ProfileActivity : AppCompatActivity() {
 
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onBackPressed() {
         profileRoot.visibility=View.VISIBLE
         super.onBackPressed()

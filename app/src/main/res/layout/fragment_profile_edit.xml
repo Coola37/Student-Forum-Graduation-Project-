@@ -129,7 +129,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/textViewChangePhoto" />
 
             <EditText
-                android:id="@+id/editTextCourseName"
+                android:id="@+id/editTextCreateName"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
@@ -149,10 +149,10 @@
                 android:text="Surname"
                 android:textSize="18sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/editTextCourseName" />
+                app:layout_constraintTop_toBottomOf="@+id/editTextCreateName" />
 
             <EditText
-                android:id="@+id/editTextTask"
+                android:id="@+id/editTextCreateSurname"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -173,10 +173,10 @@
                 android:text="Username"
                 android:textSize="18sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/editTextTask" />
+                app:layout_constraintTop_toBottomOf="@+id/editTextCreateSurname" />
 
             <EditText
-                android:id="@+id/editTextProblem"
+                android:id="@+id/editTextCreateUsername"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
@@ -196,7 +196,7 @@
                 android:text="Departmant"
                 android:textSize="18sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/editTextProblem" />
+                app:layout_constraintTop_toBottomOf="@+id/editTextCreateUsername" />
 
             <EditText
                 android:id="@+id/editTextDepartmant"

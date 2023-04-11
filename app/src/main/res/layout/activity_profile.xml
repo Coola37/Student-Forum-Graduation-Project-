@@ -11,6 +11,34 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/profileRoot">
+
+        <TextView
+            android:id="@+id/tvRank"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:text="0"
+            android:textColor="#2196F3"
+            android:textSize="20sp"
+            android:textStyle="bold|italic"
+            app:layout_constraintBottom_toTopOf="@+id/tvName"
+            app:layout_constraintStart_toEndOf="@+id/textView12"
+            app:layout_constraintTop_toBottomOf="@+id/tvUsername" />
+
+        <TextView
+            android:id="@+id/textView12"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="170dp"
+            android:layout_marginBottom="10dp"
+            android:text="Rank:"
+            android:textColor="#2196F3"
+            android:textSize="20sp"
+            android:textStyle="bold|italic"
+            app:layout_constraintBottom_toTopOf="@+id/textView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvUsername" />
+
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appbarProfile"
             android:layout_width="match_parent"
@@ -99,8 +127,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:text="Username"
+            android:textColor="@color/purple_200"
             android:textSize="20sp"
-            android:textStyle="bold"
+            android:textStyle="bold|italic"
             app:layout_constraintEnd_toEndOf="@+id/circleProfileImg"
             app:layout_constraintStart_toStartOf="@+id/circleProfileImg"
             app:layout_constraintTop_toBottomOf="@+id/circleProfileImg">
@@ -112,7 +141,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="72dp"
-            android:layout_marginTop="82dp"
+            android:layout_marginTop="120dp"
             android:text="Name:"
             android:textSize="20sp"
             android:textStyle="bold"
@@ -182,7 +211,7 @@
             android:id="@+id/tvName"
             android:layout_width="193dp"
             android:layout_height="30dp"
-            android:layout_marginTop="80dp"
+            android:layout_marginTop="120dp"
             android:layout_marginEnd="4dp"
             android:text="name"
             android:textSize="20sp"
@@ -204,9 +233,9 @@
             android:id="@+id/tvDept"
             android:layout_width="189dp"
             android:layout_height="30dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="15dp"
             android:layout_marginEnd="8dp"
-            android:text="departmant"
+            android:text="-"
             android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/tvSurname"
@@ -216,9 +245,9 @@
             android:id="@+id/tvSchool"
             android:layout_width="188dp"
             android:layout_height="30dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="15dp"
             android:layout_marginEnd="4dp"
-            android:text="school"
+            android:text="-"
             android:textSize="20sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/tvDept"
@@ -229,8 +258,11 @@
     <FrameLayout
         android:id="@+id/profileContainer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
     </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

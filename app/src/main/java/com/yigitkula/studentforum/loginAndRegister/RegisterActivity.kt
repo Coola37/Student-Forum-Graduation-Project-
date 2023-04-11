@@ -15,6 +15,7 @@ import com.google.firebase.database.*
 import com.google.firebase.ktx.Firebase
 import com.yigitkula.studentforum.R
 import com.yigitkula.studentforum.home.HomeActivity
+import com.yigitkula.studentforum.model.UserDetails
 import com.yigitkula.studentforum.model.Users
 import com.yigitkula.studentforum.utils.EventbusDataEvents
 import org.greenrobot.eventbus.EventBus
@@ -69,7 +70,6 @@ class RegisterActivity : AppCompatActivity() {
         nameText= nameRegister.text.toString()
         usernameText=usernameRegister.text.toString()
         surnameText=surnameRegister.text.toString()
-        var userID=auth.currentUser!!.uid.toString()
 
         if(emailText.isEmpty() || passText.isEmpty() || usernameText.isEmpty() || nameText.isEmpty() || surnameText.isEmpty()){
             Toast.makeText(this,"Please fill all fields",Toast.LENGTH_SHORT).show()
@@ -108,10 +108,13 @@ class RegisterActivity : AppCompatActivity() {
                                 if (task.isSuccessful) {
                                     // Sign in success, update UI with the signed-in user's information
                                     val user = auth.currentUser
+                                    val userID = user!!.uid
+
 
                                     Toast.makeText(this@RegisterActivity, "Authentication ok. ", Toast.LENGTH_SHORT).show()
 
-                                    var userRegistration = Users(emailText,usernameText,nameText,surnameText,userID)
+                                    var userDetailsRegistration =UserDetails("0", "0", "0",0)
+                                    var userRegistration = Users(emailText,usernameText,nameText,surnameText,userID,userDetailsRegistration)
 
 
                                     //Saving the created user to the database
@@ -142,7 +145,7 @@ class RegisterActivity : AppCompatActivity() {
                                      startActivity(intent)
                                      finish()
 
-                                    EventBus.getDefault().postSticky(EventbusDataEvents.getUserInfo(emailText,user!!.uid.toString(),passText))
+                                    EventBus.getDefault().postSticky(EventbusDataEvents.getUserInfo(emailText,user!!.uid,passText))
 
                                 } else {
                                     // If sign in fails, display a message to the user.
@@ -160,10 +163,12 @@ class RegisterActivity : AppCompatActivity() {
                             if (task.isSuccessful) {
                                 // Sign in success, update UI with the signed-in user's information
                                 val user = auth.currentUser
+                                val userID = user!!.uid
 
                                 Toast.makeText(this@RegisterActivity, "Authentication ok. ", Toast.LENGTH_SHORT).show()
 
-                                var userRegistration = Users(emailText,usernameText,nameText,surnameText,userID)
+                                var userDetailsRegistration =UserDetails("0", "0", "0",0)
+                                var userRegistration = Users(emailText,usernameText,nameText,surnameText,userID,userDetailsRegistration)
 
 
                                 //Saving the created user to the database
@@ -210,11 +215,6 @@ class RegisterActivity : AppCompatActivity() {
                 Toast.makeText(this@RegisterActivity, error.toString(), Toast.LENGTH_SHORT).show()
             }
         })
-
-
-
-        // create user with authentication
-
     }
 
 

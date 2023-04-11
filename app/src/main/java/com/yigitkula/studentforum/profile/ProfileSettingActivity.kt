@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.yigitkula.studentforum.R
 import com.yigitkula.studentforum.utils.BottomNavigationViewHelper
@@ -44,12 +45,8 @@ class ProfileSettingActivity : AppCompatActivity() {
     private fun activityNavigation(){
 
         signOut.setOnClickListener {
-            profileSettingsRoot.visibility= View.GONE
-            var transaction=supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.profileSettingsContainer,SignOutFragment())
-            transaction.addToBackStack("addedEditProfileFragment")
-
-            transaction.commit()
+           var dialog = SignOutFragment()
+               .show(supportFragmentManager,"ShowSignOutFragment")
         }
 
         textViewSettinggsEditProfile.setOnClickListener {
@@ -89,6 +86,7 @@ class ProfileSettingActivity : AppCompatActivity() {
         menuItem.setChecked(true)
 
     }
+
 
     override fun onBackPressed() {
         profileSettingsRoot.visibility=View.VISIBLE

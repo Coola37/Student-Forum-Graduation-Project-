@@ -1,5 +1,6 @@
 package com.yigitkula.studentforum.utils
 
+import android.app.PendingIntent.getActivity
 import android.content.Context
 import android.graphics.Bitmap
 import android.view.View
@@ -16,6 +17,7 @@ import com.nostra13.universalimageloader.core.listener.ImageLoadingListener
 import com.yigitkula.studentforum.R
 
 class UniversalImageLoader(val mContext: Context) {
+
     val config: ImageLoaderConfiguration
         get() {
 
@@ -34,7 +36,7 @@ class UniversalImageLoader(val mContext: Context) {
         }
 
     companion object {
-        private val defaultImage = R.mipmap.ic_launcher
+        private val defaultImage = R.drawable.profile_circle
         fun setImage(
             imgURL: String,
             imgView: ImageView,

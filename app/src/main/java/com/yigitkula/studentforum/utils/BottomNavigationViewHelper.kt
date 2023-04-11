@@ -17,32 +17,32 @@ class BottomNavigationViewHelper {
                 when (it.itemId) {
 
                     R.id.ic_home -> {
-                        val intent = Intent(context, HomeActivity::class.java)
+                        val intent = Intent(context, HomeActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                         context.startActivity(intent)
                         true
                     }
 
 
                     R.id.ic_search -> {
-                        val intent = Intent(context, SearchActivity::class.java)
+                        val intent = Intent(context, SearchActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                         context.startActivity(intent)
                         true
                     }
 
                     R.id.ic_notifications -> {
-                        val intent = Intent(context, NotifcationsActivity::class.java)
+                        val intent = Intent(context, NotifcationsActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                         context.startActivity(intent)
                         true
                     }
 
                     R.id.ic_profile -> {
-                        val intent = Intent(context, ProfileActivity::class.java)
+                        val intent = Intent(context, ProfileActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                         context.startActivity(intent)
                         true
                     }
 
                     R.id.ic_share -> {
-                        val intent= Intent(context, ShareActivity::class.java)
+                        val intent= Intent(context, ShareActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                         context.startActivity(intent)
                         true
                     }

@@ -91,7 +91,7 @@
             android:layout_height="match_parent">
 
             <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/circleProfileImg"
+                android:id="@+id/circleProfileImgView"
                 android:layout_width="96dp"
                 android:layout_height="96dp"
                 android:layout_marginStart="8dp"
@@ -116,7 +116,7 @@
                 android:textSize="18sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/circleProfileImg" />
+                app:layout_constraintTop_toBottomOf="@+id/circleProfileImgView" />
 
             <TextView
                 android:id="@+id/textView15"
@@ -129,7 +129,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/textViewChangePhoto" />
 
             <EditText
-                android:id="@+id/editTextCreateName"
+                android:id="@+id/editTextCourseName"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
@@ -149,10 +149,10 @@
                 android:text="Surname"
                 android:textSize="18sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/editTextCreateName" />
+                app:layout_constraintTop_toBottomOf="@+id/editTextCourseName" />
 
             <EditText
-                android:id="@+id/editTextCreateSurname"
+                android:id="@+id/editTextTopic"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -173,10 +173,10 @@
                 android:text="Username"
                 android:textSize="18sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/editTextCreateSurname" />
+                app:layout_constraintTop_toBottomOf="@+id/editTextTopic" />
 
             <EditText
-                android:id="@+id/editTextCreateUsername"
+                android:id="@+id/editTextProblem"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
@@ -189,14 +189,14 @@
                 app:layout_constraintTop_toBottomOf="@+id/textView17" />
 
             <TextView
-                android:id="@+id/textView18"
+                android:id="@+id/textViewAddImg"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:text="Departmant"
                 android:textSize="18sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/editTextCreateUsername" />
+                app:layout_constraintTop_toBottomOf="@+id/editTextProblem" />
 
             <EditText
                 android:id="@+id/editTextDepartmant"
@@ -209,7 +209,7 @@
                 android:text="Departmant"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView18" />
+                app:layout_constraintTop_toBottomOf="@+id/textViewAddImg" />
 
             <TextView
                 android:id="@+id/textView5"
@@ -232,6 +232,21 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textView5" />
+
+            <ProgressBar
+                android:id="@+id/progressBarProfileImg"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="113dp"
+                android:layout_marginTop="3dp"
+                android:layout_marginEnd="3dp"
+                android:layout_marginBottom="69dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toTopOf="@+id/editTextCourseName"
+                app:layout_constraintEnd_toStartOf="@+id/textViewChangePhoto"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/circleProfileImgView" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

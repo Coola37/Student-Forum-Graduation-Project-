@@ -7,9 +7,10 @@
     tools:context=".home.HomeActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/mainContainer"
+        android:id="@+id/mainRoot"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
 
         <View
             android:id="@+id/view2"
@@ -56,7 +57,7 @@
 
                     <View
                         android:layout_width="match_parent"
-                        android:layout_height="2dp"
+                        android:layout_height="10dp"
                         android:background="@color/side"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -71,21 +72,32 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <View
+            android:id="@+id/myquestionView"
+            android:layout_width="200dp"
+            android:layout_height="40dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/cooltext_myquestions"
+            app:layout_constraintBottom_toTopOf="@+id/rcViewLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/appbar" />
+
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/rcViewLayout"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginTop="-16dp"
             app:layout_constraintBottom_toTopOf="@+id/view2"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/appbar">
+            app:layout_constraintTop_toBottomOf="@+id/myquestionView">
 
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rcViewYourQues"
-                android:layout_width="409dp"
+                android:layout_width="match_parent"
                 android:layout_height="627dp"
                 android:layout_marginTop="30dp"
                 android:layout_marginBottom="8dp"
@@ -94,7 +106,8 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:listitem="@layout/rv_list_item" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottomNavigationView"
@@ -109,6 +122,9 @@
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
+<FrameLayout
+    android:id="@+id/mainContainer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

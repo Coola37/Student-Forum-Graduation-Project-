@@ -9,7 +9,10 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuth.AuthStateListener
 import com.yigitkula.studentforum.R
+import com.yigitkula.studentforum.loginAndRegister.LoginActivity
 import com.yigitkula.studentforum.utils.BottomNavigationViewHelper
 
 class ProfileSettingActivity : AppCompatActivity() {
@@ -22,6 +25,7 @@ class ProfileSettingActivity : AppCompatActivity() {
     private lateinit var imageView5: ImageView
     private lateinit var bottomNavigationView: BottomNavigationView
 
+    private lateinit var authListener: AuthStateListener
 
 
     private val ACTIVITY_NO=4
@@ -37,16 +41,34 @@ class ProfileSettingActivity : AppCompatActivity() {
         imageView5=findViewById(R.id.imageView5)
         bottomNavigationView=findViewById(R.id.bottomNavigationView)
 
+        setupAuthListener()
         activityNavigation()
         setupNavigationView()
         setupToolbar()
     }
 
+    private fun setupAuthListener() {
+        authListener=object : FirebaseAuth.AuthStateListener {
+            override fun onAuthStateChanged(p0: FirebaseAuth) {
+                var user= FirebaseAuth.getInstance().currentUser
+                if(user == null){
+
+                    val intent = Intent(this@ProfileSettingActivity, LoginActivity::class.java)
+                    this@ProfileSettingActivity.startActivity(intent)
+                    finish()
+
+                }else{
+                    return
+                }
+            }
+        }
+    }
     private fun activityNavigation(){
 
         signOut.setOnClickListener {
            var dialog = SignOutFragment()
                .show(supportFragmentManager,"ShowSignOutFragment")
+
         }
 
         textViewSettinggsEditProfile.setOnClickListener {

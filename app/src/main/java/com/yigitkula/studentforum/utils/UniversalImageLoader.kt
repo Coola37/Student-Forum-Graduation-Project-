@@ -36,7 +36,7 @@ class UniversalImageLoader(val mContext: Context) {
         }
 
     companion object {
-        private val defaultImage = R.drawable.profile_circle
+        private val defaultImage = R.drawable.ic_default_profile
         fun setImage(
             imgURL: String,
             imgView: ImageView,

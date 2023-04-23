@@ -17,30 +17,30 @@ import com.yigitkula.studentforum.R
 import com.yigitkula.studentforum.loginAndRegister.LoginActivity
 
 class SignOutFragment : DialogFragment() {
-        private var mActivity = ProfileActivity()
+
+    private lateinit var alert: AlertDialog
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        var alert = AlertDialog.Builder(requireActivity())
+        alert = AlertDialog.Builder(requireActivity())
             .setTitle("Log Out")
             .setMessage("Are you sure?")
             .setPositiveButton("Log Out",object: OnClickListener{
                 override fun onClick(dialog: DialogInterface?, which: Int) {
                     FirebaseAuth.getInstance().signOut()
                     activity?.finish()
-
-
+                    alert.dismiss()
                 }
             } )
             .setNegativeButton("Cancel", object: OnClickListener{
                 override fun onClick(dialog: DialogInterface?, which: Int) {
-                    dismiss()
+                    alert.dismiss()
                 }
-            }).create().show()
-        return super.onCreateDialog(savedInstanceState)
+            }).create()
+        return alert
     }
 
-    override fun onDismiss(dialog: DialogInterface) {
-        super.onDismiss(dialog)
+    override fun onDestroy() {
+        super.onDestroy()
+        alert.dismiss()
     }
-
 }

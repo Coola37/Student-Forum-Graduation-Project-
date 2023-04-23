@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -36,6 +37,7 @@ class ProfileActivity : AppCompatActivity() {
     private lateinit var tvSurname: TextView
     private lateinit var tvRank: TextView
     private lateinit var circleProfileImg: CircleImageView
+    private lateinit var progressBarProfilePicture: ProgressBar
 
     private val ACTIVITY_NO=4
     private val TAG="ProfileActivity"
@@ -46,17 +48,19 @@ class ProfileActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
+
+        progressBarProfilePicture=findViewById(R.id.progressBarProfilePictureView)
         bottomNavigationView=findViewById(R.id.bottomNavigationView)
         buttonProfileEdit=findViewById(R.id.buttonProfileEdit)
         buttonSettings=findViewById(R.id.buttonSettings)
         profileRoot=findViewById(R.id.profileRoot)
-        tvName=findViewById(R.id.tvName)
-        tvSurname=findViewById(R.id.tvSurname)
-        tvUsername=findViewById(R.id.tvUsername)
-        tvDept=findViewById(R.id.tvDept)
-        tvSchool=findViewById(R.id.tvSchool)
-        tvRank=findViewById(R.id.tvRank)
-        circleProfileImg=findViewById(R.id.circleProfileImg)
+        tvName=findViewById(R.id.tvNameView)
+        tvSurname=findViewById(R.id.tvSurnameView)
+        tvUsername=findViewById(R.id.tvUsernameView)
+        tvDept=findViewById(R.id.tvDeptView)
+        tvSchool=findViewById(R.id.tvSchoolView)
+        tvRank=findViewById(R.id.tvRankView)
+        circleProfileImg=findViewById(R.id.circleProfileImgView)
         setupAuthListener()
         auth=Firebase.auth
         mUser=auth.currentUser!!
@@ -79,6 +83,11 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     private fun getUserData(){
+
+        buttonProfileEdit.isEnabled=false
+        buttonSettings.isEnabled=false
+
+
         ref.child("users").child(mUser.uid).addValueEventListener(object: ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
 
@@ -86,6 +95,8 @@ class ProfileActivity : AppCompatActivity() {
 
 
                 EventBus.getDefault().postSticky(EventbusDataEvents.SendUserInformation(readUserData!!))
+                buttonProfileEdit.isEnabled=true
+                buttonSettings.isEnabled=true
 
                 tvUsername.setText(readUserData!!.user_name)
                 tvName.setText(readUserData!!.name)
@@ -95,9 +106,7 @@ class ProfileActivity : AppCompatActivity() {
                 tvRank.setText(readUserData!!.user_detail!!.rank.toString())
 
                var imgUrl = readUserData.user_detail!!.profile_picture!!
-                UniversalImageLoader.setImage(imgUrl,circleProfileImg,null,"")
-
-
+                UniversalImageLoader.setImage(imgUrl,circleProfileImg,progressBarProfilePicture,"")
 
             }
 

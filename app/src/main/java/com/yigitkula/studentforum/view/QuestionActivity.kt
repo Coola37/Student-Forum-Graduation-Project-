@@ -83,6 +83,12 @@ class QuestionActivity : AppCompatActivity() {
                 transaction.addToBackStack(null)
                 EventBus.getDefault().postSticky(EventbusDataEvents.GetFeedbackSenderID(feedback.senderID))
 
+
+
+
+
+
+
                 transaction.commit()
             }
         })

@@ -116,7 +116,7 @@
                     android:layout_marginEnd="8dp"
                     android:ems="10"
                     android:inputType="textPersonName"
-                    android:text="Enter the course name"
+                    android:hint="Enter the course name"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textView15" />
@@ -140,7 +140,7 @@
                     android:layout_marginEnd="8dp"
                     android:ems="10"
                     android:inputType="textPersonName"
-                    android:text="Enter the topic"
+                    android:hint="Enter the topic"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="1.0"
                     app:layout_constraintStart_toStartOf="parent"
@@ -164,8 +164,9 @@
                     android:layout_marginTop="24dp"
                     android:layout_marginEnd="8dp"
                     android:ems="10"
-                    android:inputType="textPersonName"
-                    android:text="Explain your problem."
+                    android:gravity="start|top"
+                    android:inputType="textMultiLine"
+                    android:hint="Explain your problem."
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textView17" />
@@ -214,12 +215,5 @@
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <FrameLayout
-        android:id="@+id/shareContainer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        tools:visibility="gone" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

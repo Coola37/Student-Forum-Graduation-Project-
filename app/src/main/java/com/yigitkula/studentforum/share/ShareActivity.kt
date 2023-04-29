@@ -23,6 +23,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.nostra13.universalimageloader.core.ImageLoader
 import com.yigitkula.studentforum.R
+import com.yigitkula.studentforum.home.HomeActivity
 import com.yigitkula.studentforum.loginAndRegister.LoginActivity
 import com.yigitkula.studentforum.model.Post
 import com.yigitkula.studentforum.utils.BottomNavigationViewHelper
@@ -70,6 +71,10 @@ class ShareActivity : AppCompatActivity() {
 
         buttonShare.setOnClickListener {
             shareQuestion()
+            val intent = Intent(this, HomeActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+            this.startActivity(intent)
+            this.finish()
+            true
         }
         textViewAddImg.setOnClickListener {
             var intent = Intent()
@@ -105,9 +110,9 @@ class ShareActivity : AppCompatActivity() {
             var postID = UUID.randomUUID().toString()
             var postQuestion = Post(postID,userID,courseNameText,topicText,problemText,"")
 
-            ref.child("posts").addListenerForSingleValueEvent(object : ValueEventListener{
+            ref.child("posts").child(courseNameText).addListenerForSingleValueEvent(object : ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    if(snapshot!!.getValue() != null){
+
                                 var uploadTask = storageRef.child("posts").child(postID.toString())
                                     .child(postPhotoUri!!.lastPathSegment!!).putFile(postPhotoUri!!)
                                     .addOnSuccessListener { itUploadTask ->
@@ -141,39 +146,7 @@ class ShareActivity : AppCompatActivity() {
                                             Toast.makeText(this@ShareActivity,p0.message,Toast.LENGTH_SHORT).show()
                                         }
                                     })
-                    }
-                    else{
-                        var uploadTask = storageRef.child("posts").child(postID.toString())
-                            .child(postPhotoUri!!.lastPathSegment!!).putFile(postPhotoUri!!)
-                            .addOnSuccessListener { itUploadTask ->
-                                itUploadTask?.storage?.downloadUrl?.addOnSuccessListener { itUri ->
-
-                                    val downloadUrl: String = itUri.toString()
-                                    ref.child("posts").child(postID.toString()).child("problem_img")
-                                        .setValue(downloadUrl).addOnCompleteListener { itTask ->
-                                            if(itTask.isSuccessful){
-                                                postQuestion.problem_img=downloadUrl
-                                                Log.e("ProblemImg","Upload is succesful")
-                                            }else{
-                                                Log.e("ProblemImg",itTask.exception?.message.toString())
-                                            }
-                                        }
-                                }
-                            }
-                        ref.child("posts").child(postID.toString()).setValue(postQuestion)
-                            .addOnCompleteListener(object: OnCompleteListener<Void>{
-                                override fun onComplete(p0: Task<Void>) {
-                                    if(p0.isSuccessful){
-                                        Toast.makeText(this@ShareActivity,"Question sent",Toast.LENGTH_SHORT).show()
-                                    }else{
-                                        Toast.makeText(this@ShareActivity,"Question not sent",Toast.LENGTH_SHORT).show()
-                                    }
-                                }
-                            })
-                    }
-
                 }
-
                 override fun onCancelled(error: DatabaseError) {
                     Toast.makeText(this@ShareActivity, error.toString(), Toast.LENGTH_SHORT).show()
                 }

@@ -15,9 +15,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.*
 import com.yigitkula.studentforum.R
+import com.yigitkula.studentforum.adapter.CourseNameAdapter
 import com.yigitkula.studentforum.adapter.MyPostsAdapter
 import com.yigitkula.studentforum.loginAndRegister.LoginActivity
 import com.yigitkula.studentforum.model.Post
@@ -39,7 +39,7 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var ref: DatabaseReference
     private lateinit var authListener: FirebaseAuth.AuthStateListener
-    private lateinit var adapter: MyPostsAdapter
+    private lateinit var adapter: CourseNameAdapter
 
 
     private lateinit var context: Context
@@ -59,25 +59,55 @@ class SearchActivity : AppCompatActivity() {
         searchRecyclerView.layoutManager=LinearLayoutManager(this)
         setupNavigationView()
         setupAuthListener()
-        val query = FirebaseDatabase.getInstance().getReference("posts")
-        val options = FirebaseRecyclerOptions.Builder<Post>()
-            .setQuery(query, Post::class.java)
-            .build()
 
-        val view = View(this)
+        val courseRef = ref.child("posts")
+        val courseNames = mutableListOf<String>()
 
-        adapter = MyPostsAdapter(options)
+        fun filterList(text: String) {
+            val filteredCourseNames = courseNames.filter { it.contains(text, ignoreCase = true) }
+            (searchRecyclerView.adapter as CourseNameAdapter).filterList(text)
+        }
 
-        adapter.ViewHolder(view).setOnItemClickListener(object : MyPostsAdapter.OnItemClickListener{
-            override fun onItemClick(post: Post) {
+        val eventListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                for (snapshot in dataSnapshot.children) {
+                    val userName = snapshot.child("course_name").getValue(String::class.java)
+                    userName?.let { courseNames.add(it) }
+                }
+                val duplicatedUserNames = courseNames.groupingBy { it }.eachCount().filter { it.value > 1 }.keys
+                val uniqueUserName = duplicatedUserNames.first()
 
-                val intent = Intent(context, QuestionActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-                context.startActivity(intent)
-                EventBus.getDefault().postSticky(EventbusDataEvents.SendPostInfo(post))
+                courseNames.removeAll(duplicatedUserNames)
+                courseNames.add(uniqueUserName)
+
+                searchRecyclerView.layoutManager = LinearLayoutManager(this@SearchActivity)
+                adapter = CourseNameAdapter(courseNames)
+                searchRecyclerView.adapter=adapter
+
+                searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                    override fun onQueryTextSubmit(query: String?): Boolean {
+                        return false
+                    }
+
+                    override fun onQueryTextChange(newText: String?): Boolean {
+                        newText?.let { filterList(it) }
+                        return true
+                    }
+                })
+
             }
-        })
-        searchRecyclerView.adapter=adapter
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                println("Error: ${databaseError.message}")
+            }
+        }
+        courseRef.addValueEventListener(eventListener)
+
+
+    }
+
+    private fun search(searcV: SearchView){
+        searcV.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false
             }
@@ -94,12 +124,38 @@ class SearchActivity : AppCompatActivity() {
                         .setQuery(query, Post::class.java)
                         .build()
 
-                    adapter.updateOptions(options)
+                    //adapter.updateOptions(options)
                 }
                 return true
             }
 
         })
+
+        searcV.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                if (newText != null) {
+
+                    val query = FirebaseDatabase.getInstance().getReference("posts")
+                        .orderByChild("course_name")
+                        .startAt(newText.lowercase())
+                        .endAt(newText.lowercase() + "\uf8ff")
+
+
+                    val options = FirebaseRecyclerOptions.Builder<Post>()
+                        .setQuery(query, Post::class.java)
+                        .build()
+
+                    //adapter.updateOptions(options)
+                }
+                return true
+            }
+
+        })
+
     }
 
     fun setupNavigationView(){
@@ -126,14 +182,10 @@ class SearchActivity : AppCompatActivity() {
     }
 
 
-
-
-
-
     override fun onStart() {
         super.onStart()
         auth.addAuthStateListener(authListener)
-        adapter.startListening()
+//        adapter.startListening()
     }
 
     override fun onStop() {

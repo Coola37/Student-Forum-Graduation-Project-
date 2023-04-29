@@ -10,7 +10,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:background="@drawable/list_item_bg"
+        android:background="@drawable/item_background"
         android:padding="8dp">
 
         <TextView
@@ -20,7 +20,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:text="Course Code:"
-            android:textColor="@color/white"
+            android:textColor="#E0F7FA"
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
@@ -34,7 +34,7 @@
             android:layout_marginTop="16dp"
             android:layout_weight="1"
             android:text="Comp117"
-            android:textColor="@color/white"
+            android:textColor="#E0F7FA"
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/textView8"
@@ -47,7 +47,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:text="Topic:"
-            android:textColor="@color/white"
+            android:textColor="#E0F7FA"
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
@@ -60,7 +60,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:text="HW1"
-            android:textColor="@color/white"
+            android:textColor="#E0F7FA"
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/textView9"

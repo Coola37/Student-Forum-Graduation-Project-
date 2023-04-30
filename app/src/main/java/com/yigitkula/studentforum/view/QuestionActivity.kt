@@ -43,7 +43,10 @@ class QuestionActivity : AppCompatActivity() {
     private lateinit var listViewFeedbacksQuestion: ListView
     private lateinit var textViewSenderUsername: TextView
     private lateinit var questionContainer : FrameLayout
-    private lateinit var tvSenderID: TextView
+    private lateinit var textViewPostDate: TextView
+    private lateinit var textViewViews: TextView
+
+
 
     private lateinit var ref: DatabaseReference
     private lateinit var auth:FirebaseAuth
@@ -61,17 +64,19 @@ class QuestionActivity : AppCompatActivity() {
         editTextFeedbackQuestion=findViewById(R.id.editTextSendFeedbackQuestion)
         textViewSenderUsername = findViewById(R.id.textViewSenderUsername)
         questionContainer=findViewById(R.id.questionContainer)
+        textViewPostDate=findViewById(R.id.textViewPostDate)
+        textViewViews=findViewById(R.id.textViewViews)
 
         auth=Firebase.auth
         ref = FirebaseDatabase.getInstance().reference
+
+
         EventBus.getDefault().register(this)
         initImageLoader()
         getPostData()
 
-
         val postIdAdapter = incomingPostInfo!!.post_id!!
 
-        val view = View(this)
         val adapter = FeedbackAdapter(this, listViewFeedbacksQuestion,"feedbacks/${postIdAdapter}/")
         adapter.setOnItemClickListener(object : FeedbackAdapter.OnItemClickListener {
             override fun onItemClick(feedback: Feedbacks) {
@@ -82,12 +87,6 @@ class QuestionActivity : AppCompatActivity() {
                 transaction.replace(R.id.questionContainer,ProfileViewFragment())
                 transaction.addToBackStack(null)
                 EventBus.getDefault().postSticky(EventbusDataEvents.GetFeedbackSenderID(feedback.senderID))
-
-
-
-
-
-
 
                 transaction.commit()
             }
@@ -105,13 +104,16 @@ class QuestionActivity : AppCompatActivity() {
             transaction.commit()
 
         }
+        increaseViewCount(incomingPostInfo!!.post_id!!)
     }
+
 
 
     fun getPostData(){
         tvQuestionProblem.setText(incomingPostInfo!!.problem)
         tvQuestionTopic.setText(incomingPostInfo!!.topic)
         tvQuestionCourseName.setText(incomingPostInfo!!.course_name)
+        textViewPostDate.setText(incomingPostInfo!!.date)
 
         var imgUrl = incomingPostInfo!!.problem_img!!
         UniversalImageLoaderPost.setImage(imgUrl,questionProblemImg,null,"")
@@ -150,7 +152,8 @@ class QuestionActivity : AppCompatActivity() {
 
         usernameControl.child("user_name").get().addOnSuccessListener { dataSnapshot ->
             val userName = dataSnapshot.value as String
-            var sendFeedback = Feedbacks(postID,feedbackID,senderID,userName,feedbackText)
+            val date = Date().toString()
+            var sendFeedback = Feedbacks(postID,feedbackID,senderID,userName,feedbackText,date)
 
             if (feedbackText != null){
                 ref.child("feedbacks").child(postID).child(feedbackID).setValue(sendFeedback)
@@ -172,6 +175,58 @@ class QuestionActivity : AppCompatActivity() {
             Log.e("username", exception.message.toString())
         }
 
+    }
+    private fun increaseViewCount(questionId: String) {
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+        if (userId != null) {
+            val databaseRef = FirebaseDatabase.getInstance().reference
+            val questionRef = databaseRef.child("posts").child(questionId)
+            val viewCountRef = questionRef.child("viewCount")
+            val userViewsRef = questionRef.child("users").child(userId)
+
+            userViewsRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (!snapshot.exists()) {
+                        viewCountRef.runTransaction(object : Transaction.Handler {
+                            override fun doTransaction(mutableData: MutableData): Transaction.Result {
+                                val currentValue = mutableData.getValue(Int::class.java) ?: 0
+                                mutableData.value = currentValue + 1
+                                return Transaction.success(mutableData)
+                            }
+
+                            override fun onComplete(
+                                databaseError: DatabaseError?,
+                                committed: Boolean,
+                                currentData: DataSnapshot?
+                            ) {
+                                if (databaseError == null) {
+                                    if (committed) {
+                                        userViewsRef.setValue(true)
+                                    }
+                                } else {
+                                    // Handle the error
+                                }
+                            }
+                        })
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    // Handle the error
+                }
+            })
+        }
+        ref.child("posts").child(incomingPostInfo!!.post_id!!).child("viewCount")
+            .addListenerForSingleValueEvent(object : ValueEventListener{
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val views = snapshot.getValue(Int::class.java)
+                    textViewViews.setText(views.toString())
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.e("viewsError","views do not add")
+                }
+            })
     }
     private fun incerementRank(){
        ref.child("users").child(auth.uid!!).child("user_detail").child("rank")

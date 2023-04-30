@@ -13,4 +13,6 @@ class EventbusDataEvents {
     internal class SendPostInfo(var post: Post)
 
     internal class GetFeedbackSenderID(var senderID: String?)
+
+    internal class GetPostCourseName(var courseName: String?)
 }

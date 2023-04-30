@@ -31,7 +31,10 @@ import com.yigitkula.studentforum.utils.UniversalImageLoader
 import com.yigitkula.studentforum.utils.UniversalImageLoaderPost
 import org.w3c.dom.Text
 import java.lang.Exception
-import java.util.UUID
+import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.*
 import kotlin.random.Random
 
 class ShareActivity : AppCompatActivity() {
@@ -108,7 +111,10 @@ class ShareActivity : AppCompatActivity() {
         else{
             val userID = auth.currentUser!!.uid
             var postID = UUID.randomUUID().toString()
-            var postQuestion = Post(postID,userID,courseNameText,topicText,problemText,"")
+            val date = Date().toString()
+
+
+            var postQuestion = Post(postID,userID,courseNameText,topicText,problemText,"",date)
 
             ref.child("posts").child(courseNameText).addListenerForSingleValueEvent(object : ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {

@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.yigitkula.studentforum.R
 import java.util.*
 
-class CourseNameAdapter(private val dataList: List<String>) : RecyclerView.Adapter<CourseNameAdapter.ViewHolder>() {
+class CourseNameAdapter(private val dataList: List<String>, private val clickListener: ((String) -> Unit)?) : RecyclerView.Adapter<CourseNameAdapter.ViewHolder>() {
 
     private var filteredList = mutableListOf<String>()
 
@@ -31,8 +31,16 @@ class CourseNameAdapter(private val dataList: List<String>) : RecyclerView.Adapt
         notifyDataSetChanged()
     }
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
         val textView: TextView = itemView.findViewById(R.id.textViewCourseGroupName)
+
+        init {
+            itemView.setOnClickListener(this)
+        }
+
+        override fun onClick(v: View?) {
+            clickListener?.invoke(filteredList[adapterPosition])
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

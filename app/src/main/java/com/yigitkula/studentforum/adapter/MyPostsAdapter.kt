@@ -1,5 +1,6 @@
 package com.yigitkula.studentforum.adapter
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -7,6 +8,11 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.ktx.Firebase
 import com.yigitkula.studentforum.R
 import com.yigitkula.studentforum.model.Post
 import com.yigitkula.studentforum.utils.EventbusDataEvents
@@ -47,8 +53,19 @@ class MyPostsAdapter(options: FirebaseRecyclerOptions<Post>) :
         }
 
         fun bind(post: Post) {
-            var courseName = itemView.findViewById(R.id.itemTvCourseCodeSearch) as TextView
-            courseName.setText(post.course_name)
+            FirebaseDatabase.getInstance().reference.child("users").child(post.sender_user!!).child("user_name")
+                .addListenerForSingleValueEvent(object: ValueEventListener{
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val username = snapshot.getValue(String::class.java)
+                        var senderUsername = itemView.findViewById(R.id.textViewSenderUser) as TextView
+                        senderUsername.setText(username)
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.e("Post adapter username:", "error")
+                    }
+                })
+
             var courseTopic = itemView.findViewById(R.id.itemTvTopicSearch) as TextView
             courseTopic.setText(post.topic)
             var postUuId = itemView.findViewById(R.id.rvItemUUId) as TextView

@@ -8,6 +8,7 @@ class Post {
     var topic: String? = null
     var problem: String? = null
     var problem_img: String? = null
+    var date: String? = null
 
     constructor()
 
@@ -17,7 +18,8 @@ class Post {
         course_name: String?,
         topic: String?,
         problem: String?,
-        problem_img: String?
+        problem_img: String?,
+        date: String?
     ) {
         this.post_id = post_id
         this.sender_user = sender_user
@@ -25,6 +27,7 @@ class Post {
         this.topic = topic
         this.problem = problem
         this.problem_img = problem_img
+        this.date=date
     }
     override fun equals(other: Any?): Boolean {
         if (other == null || other !is Post) {

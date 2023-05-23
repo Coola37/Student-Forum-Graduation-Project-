@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
@@ -34,8 +35,10 @@ class ProfileViewFragment : Fragment() {
     private lateinit var tvSchoolView: TextView
     private lateinit var circleProfileImgView: CircleImageView
     private lateinit var progressBarProfilePictureView: ProgressBar
+    private lateinit var imageViewBack: ImageView
 
     private var incFeedbackId:String? = ""
+    private var incPostId:String? = ""
     private lateinit var ref: DatabaseReference
     private lateinit var auth: FirebaseAuth
 
@@ -56,6 +59,10 @@ class ProfileViewFragment : Fragment() {
         tvDeptView=view.findViewById(R.id.tvDeptView)
         circleProfileImgView=view.findViewById(R.id.circleProfileImgView)
         progressBarProfilePictureView=view.findViewById(R.id.progressBarProfilePictureView)
+        imageViewBack=view.findViewById(R.id.imageViewBack)
+        imageViewBack.setOnClickListener {
+            requireActivity().onBackPressed()
+        }
 
         auth=Firebase.auth
         ref=FirebaseDatabase.getInstance().reference
@@ -63,28 +70,48 @@ class ProfileViewFragment : Fragment() {
         getData()
        // Toast.makeText(activity,incFeedbackId,Toast.LENGTH_SHORT).show()
         initImageLoader()
-
         return view
     }
     private fun getData(){
-        ref.child("users").child(incFeedbackId!!)
-            .addValueEventListener(object : ValueEventListener{
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    val user = snapshot.getValue(Users::class.java)
-                    tvUsernameView.setText(user!!.user_name)
-                    tvRankView.setText(user!!.user_detail!!.rank.toString())
-                    tvNameView.setText(user!!.name)
-                    tvSurnameView.setText(user!!.surname)
-                    tvDeptView.setText(user!!.user_detail!!.departmant)
-                    tvSchoolView.setText(user!!.user_detail!!.school)
-                    val url = user!!.user_detail!!.profile_picture
-                    UniversalImageLoader.setImage(url!!,circleProfileImgView,progressBarProfilePictureView,"")
-                }
+       if(incFeedbackId != ""){
+           ref.child("users").child(incFeedbackId!!)
+               .addValueEventListener(object : ValueEventListener{
+                   override fun onDataChange(snapshot: DataSnapshot) {
+                       val user = snapshot.getValue(Users::class.java)
+                       tvUsernameView.setText(user!!.user_name)
+                       tvRankView.setText(user!!.user_detail!!.rank.toString())
+                       tvNameView.setText(user!!.name)
+                       tvSurnameView.setText(user!!.surname)
+                       tvDeptView.setText(user!!.user_detail!!.departmant)
+                       tvSchoolView.setText(user!!.user_detail!!.school)
+                       val url = user!!.user_detail!!.profile_picture
+                       UniversalImageLoader.setImage(url!!,circleProfileImgView,progressBarProfilePictureView,"")
+                   }
 
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
-            })
+                   override fun onCancelled(error: DatabaseError) {
+                       TODO("Not yet implemented")
+                   }
+               })
+       }else{
+           ref.child("users").child(incPostId!!)
+               .addValueEventListener(object : ValueEventListener{
+                   override fun onDataChange(snapshot: DataSnapshot) {
+                       val user = snapshot.getValue(Users::class.java)
+                       tvUsernameView.setText(user!!.user_name)
+                       tvRankView.setText(user!!.user_detail!!.rank.toString())
+                       tvNameView.setText(user!!.name)
+                       tvSurnameView.setText(user!!.surname)
+                       tvDeptView.setText(user!!.user_detail!!.departmant)
+                       tvSchoolView.setText(user!!.user_detail!!.school)
+                       val url = user!!.user_detail!!.profile_picture
+                       UniversalImageLoader.setImage(url!!,circleProfileImgView,progressBarProfilePictureView,"")
+                   }
+
+                   override fun onCancelled(error: DatabaseError) {
+                       TODO("Not yet implemented")
+                   }
+               })
+       }
     }
 
     @Subscribe(sticky = true)
@@ -92,6 +119,12 @@ class ProfileViewFragment : Fragment() {
         incFeedbackId=feedbackInf.senderID!!
 
     }
+    @Subscribe(sticky = true)
+    internal fun onPostInfoEvent2(postInf: EventbusDataEvents.GetPostSenderID){
+        incPostId=postInf!!.senderID!!
+
+    }
+
     private fun initImageLoader() {
 
         var universalImageLoader = UniversalImageLoader(requireActivity())

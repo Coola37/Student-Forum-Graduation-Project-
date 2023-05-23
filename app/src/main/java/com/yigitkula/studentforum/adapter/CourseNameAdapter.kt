@@ -39,7 +39,7 @@ class CourseNameAdapter(private val dataList: List<String>, private val clickLis
         }
 
         override fun onClick(v: View?) {
-            clickListener?.invoke(filteredList[adapterPosition])
+            clickListener?.invoke(filteredList[position])
         }
     }
 

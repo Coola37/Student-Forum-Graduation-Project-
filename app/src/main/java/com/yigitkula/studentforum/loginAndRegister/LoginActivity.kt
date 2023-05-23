@@ -15,7 +15,11 @@ import com.google.firebase.auth.FirebaseAuth.getInstance
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.iid.FirebaseInstanceIdReceiver
+import com.google.firebase.iid.internal.FirebaseInstanceIdInternal
+import com.google.firebase.installations.FirebaseInstallations
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.FirebaseMessaging
 import com.yigitkula.studentforum.R
 import com.yigitkula.studentforum.home.HomeActivity
 import java.util.Objects
@@ -48,7 +52,7 @@ class LoginActivity : AppCompatActivity() {
 
 
         setupButtonClick()
-        setupAuthListener()
+
 
     }
 
@@ -69,6 +73,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
 
+
     private fun authPerfomLogin(){
 
         val email = emailLogin.text.toString()
@@ -79,16 +84,21 @@ class LoginActivity : AppCompatActivity() {
             return
         }
 
-
-        auth.signInWithEmailAndPassword(email, password)
-            .addOnCompleteListener(this){ task->
+        auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this){ task->
                 if (task.isSuccessful){
-                    val user = auth.currentUser
-                    Toast.makeText(this,"Welcome to Student Forum!",Toast.LENGTH_SHORT).show()
-                    progresBarLogin.visibility= View.GONE
-                    val intent = Intent(this, HomeActivity::class.java)
-                    this.startActivity(intent)
-                    finish()
+                    saveFcnToken()
+                    val verification = auth.currentUser?.isEmailVerified
+                    if(verification == true){
+                        Toast.makeText(this,"Welcome to Student Forum!",Toast.LENGTH_SHORT).show()
+                        progresBarLogin.visibility= View.GONE
+                        val intent = Intent(this, HomeActivity::class.java)
+                        this.startActivity(intent)
+                        finish()
+                    }else{
+                        Toast.makeText(this,"Please verify your Email!",Toast.LENGTH_SHORT).show()
+                    }
+
+
                 }else{
                     progresBarLogin.visibility= View.GONE
                     Toast.makeText(this,"Login failed!",Toast.LENGTH_SHORT).show()
@@ -99,6 +109,21 @@ class LoginActivity : AppCompatActivity() {
                 Toast.makeText(this,"Authentication failed: ${it.localizedMessage}",Toast.LENGTH_SHORT).show()
             }
 
+    }
+
+    private fun saveFcnToken() {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener {
+            var token = it.result
+            saveNewTokenInDatabase(token)
+        }
+    }
+    private fun saveNewTokenInDatabase(newToken: String){
+        if(FirebaseAuth.getInstance().currentUser != null){
+            FirebaseDatabase.getInstance().reference
+                .child("users")
+                .child(FirebaseAuth.getInstance().currentUser!!.uid)
+                .child("fcn_token").setValue(newToken)
+        }
     }
 
     private fun setupAuthListener() {
@@ -120,13 +145,13 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        auth.addAuthStateListener(authListener)
+       // auth.addAuthStateListener(authListener)
     }
 
     override fun onStop() {
         super.onStop()
-        if(authListener != null){
-            auth.removeAuthStateListener(authListener)
-        }
+       /* if(authListener != null){
+         //   auth.removeAuthStateListener(authListener)
+        }*/
     }
 }

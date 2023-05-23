@@ -3,6 +3,7 @@ package com.yigitkula.studentforum.home
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -11,7 +12,10 @@ import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.ktx.Firebase
 import com.yigitkula.studentforum.R
 import com.yigitkula.studentforum.adapter.MyPostsAdapter
@@ -32,7 +36,7 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var authListener: FirebaseAuth.AuthStateListener
     private lateinit var adapter: MyPostsAdapter
-
+    private var postList = mutableListOf<Post>()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,29 +47,43 @@ class HomeActivity : AppCompatActivity() {
         bottomNavigationView = findViewById(R.id.bottomNavigationView)
         rcViewYourQues=findViewById(R.id.rcViewYourQues)
         mainRoot = findViewById(R.id.mainRoot)
-        rcViewYourQues.layoutManager=LinearLayoutManager(this)
 
 
-        val query = FirebaseDatabase.getInstance().getReference("posts").orderByChild("sender_user").equalTo(auth.uid)
 
-        val options = FirebaseRecyclerOptions.Builder<Post>()
-            .setQuery(query, Post::class.java)
-            .build()
+        val postsRef = FirebaseDatabase.getInstance().getReference("posts")
+        val postListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                postList.clear() // Önceki verileri temizle
 
-        val view = View(this)
+                for (postSnapshot in dataSnapshot.children) {
+                    val post = postSnapshot.getValue(Post::class.java)
 
-        adapter = MyPostsAdapter(options)
-        adapter.ViewHolder(view).setOnItemClickListener(object : MyPostsAdapter.OnItemClickListener{
-            override fun onItemClick(post: Post) {
+                    if (post!!.sender_user == auth.currentUser!!.uid) {
+                        postList.add(post)
+                        Log.e("homeRcView","Added Post")
+                    }
+                }
 
-                val intent = Intent(this@HomeActivity, QuestionActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
-                this@HomeActivity.startActivity(intent)
-                EventBus.getDefault().postSticky(EventbusDataEvents.SendPostInfo(post))
+                for (post in postList) {
+                    Log.d("Post", "Course Name: ${post!!.course_name}")
+                }
 
+                rcViewYourQues.layoutManager=LinearLayoutManager(this@HomeActivity)
+                adapter = MyPostsAdapter(postList){
+                    EventBus.getDefault().postSticky(EventbusDataEvents.SendPostInfo(it))
+                    val intent = Intent(this@HomeActivity, QuestionActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+                    startActivity(intent)
+                }
+                rcViewYourQues.adapter=adapter
 
             }
-        })
-        rcViewYourQues.adapter = adapter
+
+            override fun onCancelled(databaseError: DatabaseError) {
+            }
+        }
+
+
+        postsRef.addValueEventListener(postListener)
 
 
         setupNavigationView()
@@ -103,14 +121,14 @@ class HomeActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         auth.addAuthStateListener(authListener)
-        adapter.startListening()
+       // adapter.startListening()
     }
 
     override fun onStop() {
         super.onStop()
         if(authListener != null){
             auth.removeAuthStateListener(authListener)
-            adapter.startListening()
+         //   adapter.startListening()
         }
     }
 }

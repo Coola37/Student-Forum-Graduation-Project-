@@ -111,7 +111,8 @@ class ShareActivity : AppCompatActivity() {
         else{
             val userID = auth.currentUser!!.uid
             var postID = UUID.randomUUID().toString()
-            val date = Date().toString()
+            val dateFormat = SimpleDateFormat("dd/M/yyyy hh:mm")
+            val date = dateFormat.format(Date())
 
 
             var postQuestion = Post(postID,userID,courseNameText,topicText,problemText,"",date)
@@ -119,23 +120,39 @@ class ShareActivity : AppCompatActivity() {
             ref.child("posts").child(courseNameText).addListenerForSingleValueEvent(object : ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
 
-                                var uploadTask = storageRef.child("posts").child(postID.toString())
-                                    .child(postPhotoUri!!.lastPathSegment!!).putFile(postPhotoUri!!)
-                                    .addOnSuccessListener { itUploadTask ->
-                                        itUploadTask?.storage?.downloadUrl?.addOnSuccessListener { itUri ->
+                                if(postPhotoUri != null){
+                                    var uploadTask = storageRef.child("posts").child(postID.toString())
+                                        .child(postPhotoUri!!.lastPathSegment!!).putFile(postPhotoUri!!)
+                                        .addOnSuccessListener { itUploadTask ->
+                                            itUploadTask?.storage?.downloadUrl?.addOnSuccessListener { itUri ->
 
-                                            val downloadUrl: String = itUri.toString()
-                                            ref.child("posts").child(postID.toString()).child("problem_img")
-                                                .setValue(downloadUrl).addOnCompleteListener { itTask ->
-                                                    if(itTask.isSuccessful){
-                                                        postQuestion.problem_img=downloadUrl
-                                                        Log.e("ProblemImg","Upload is succesful")
-                                                    }else{
-                                                        Log.e("ProblemImg",itTask.exception?.message.toString())
-                                                    }
+                                                val downloadUrl: String = itUri.toString()
+                                                if(downloadUrl != null){
+                                                    ref.child("posts").child(postID.toString()).child("problem_img")
+                                                        .setValue(downloadUrl).addOnCompleteListener { itTask ->
+                                                            if(itTask.isSuccessful){
+                                                                postQuestion.problem_img=downloadUrl
+                                                                Log.e("ProblemImg","Upload is succesful")
+                                                            }else{
+                                                                Log.e("ProblemImg",itTask.exception?.message.toString())
+                                                            }
+                                                        }
+                                                }else{
+                                                    ref.child("posts").child(postID.toString()).child("problem_img")
+                                                        .setValue(" ").addOnCompleteListener { itTask ->
+                                                            if(itTask.isSuccessful){
+                                                                postQuestion.problem_img=downloadUrl
+                                                                Log.e("ProblemImg","Upload is succesful")
+                                                            }else{
+                                                                Log.e("ProblemImg",itTask.exception?.message.toString())
+                                                            }
+                                                        }
                                                 }
+                                            }
                                         }
-                                    }
+                                }else{
+                                        Log.e("PhotoUri","null")
+                                }
 
                                 ref.child("posts").child(postID.toString()).setValue(postQuestion)
                                     .addOnCompleteListener(object: OnCompleteListener<Void>{

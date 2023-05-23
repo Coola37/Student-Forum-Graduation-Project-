@@ -2,6 +2,7 @@ package com.yigitkula.studentforum.loginAndRegister
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -81,8 +82,6 @@ class RegisterActivity : AppCompatActivity() {
 
         ref.child("users").addListenerForSingleValueEvent(object : ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
-                if(snapshot!!.getValue() != null){
-
                     for(user in snapshot!!.children){
 
                         var readUser=user.getValue(Users::class.java)
@@ -106,109 +105,23 @@ class RegisterActivity : AppCompatActivity() {
                         auth.createUserWithEmailAndPassword(emailText, passText)
                             .addOnCompleteListener(this@RegisterActivity) { task ->
                                 if (task.isSuccessful) {
-                                    // Sign in success, update UI with the signed-in user's information
-                                    val user = auth.currentUser
-                                    val userID = user!!.uid
-
-
-                                    Toast.makeText(this@RegisterActivity, "Authentication ok. ", Toast.LENGTH_SHORT).show()
-
-                                    var userDetailsRegistration =UserDetails("0", "0", "0",0)
-                                    var userRegistration = Users(emailText,usernameText,nameText,surnameText,userID,userDetailsRegistration)
-
-
-                                    //Saving the created user to the database
-                                    ref.child("users").child(userID).setValue(userRegistration)
-                                        .addOnCompleteListener(object : OnCompleteListener<Void>{
-                                            override fun onComplete(p0: Task<Void>) {
-                                                if(p0.isSuccessful){
-                                                    Toast.makeText(this@RegisterActivity,"User Save!",Toast.LENGTH_SHORT).show()
-                                                    userRegisterLoading.visibility=View.GONE
-                                                }else{
-                                                    //User deletion
-                                                    auth.currentUser!!.delete()
-                                                        .addOnCompleteListener(object: OnCompleteListener<Void>{
-                                                            override fun onComplete(p0: Task<Void>) {
-                                                                if(p0.isSuccessful){
-                                                                    userRegisterLoading.visibility=View.GONE
-                                                                    Toast.makeText(this@RegisterActivity,"User has been deleted!",Toast.LENGTH_SHORT).show()
-                                                                }
-                                                            }
-                                                        })
-                                                    userRegisterLoading.visibility=View.GONE
-                                                    Toast.makeText(this@RegisterActivity,"User not save!",Toast.LENGTH_SHORT).show()
-                                                }
-                                            }
-                                        })
-
-                                     val intent = Intent(this@RegisterActivity,HomeActivity::class.java)
-                                     startActivity(intent)
-                                     finish()
-
-                                    EventBus.getDefault().postSticky(EventbusDataEvents.getUserInfo(emailText,user!!.uid,passText))
+                                    auth.currentUser?.sendEmailVerification()
+                                        ?.addOnCompleteListener{
+                                            Toast.makeText(this@RegisterActivity, "Please verify your email!", Toast.LENGTH_SHORT).show()
+                                            saveData()
+                                        }
+                                        ?.addOnFailureListener {
+                                            Toast.makeText(this@RegisterActivity, it.toString(), Toast.LENGTH_SHORT).show()
+                                        }
 
                                 } else {
                                     // If sign in fails, display a message to the user.
                                     userRegisterLoading.visibility=View.GONE
-                                    Toast.makeText(this@RegisterActivity, "Authentication failed.", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(this@RegisterActivity, "Registration failed.", Toast.LENGTH_SHORT).show()
                                 }
                             }
 
                     }
-                }
-                else{
-
-                    auth.createUserWithEmailAndPassword(emailText, passText)
-                        .addOnCompleteListener(this@RegisterActivity) { task ->
-                            if (task.isSuccessful) {
-                                // Sign in success, update UI with the signed-in user's information
-                                val user = auth.currentUser
-                                val userID = user!!.uid
-
-                                Toast.makeText(this@RegisterActivity, "Authentication ok. ", Toast.LENGTH_SHORT).show()
-
-                                var userDetailsRegistration =UserDetails("0", "0", "0",0)
-                                var userRegistration = Users(emailText,usernameText,nameText,surnameText,userID,userDetailsRegistration)
-
-
-                                //Saving the created user to the database
-                                ref.child("users").child(userID).setValue(userRegistration)
-                                    .addOnCompleteListener(object : OnCompleteListener<Void>{
-                                        override fun onComplete(p0: Task<Void>) {
-                                            if(p0.isSuccessful){
-                                                Toast.makeText(this@RegisterActivity,"User Save!",Toast.LENGTH_SHORT).show()
-                                                userRegisterLoading.visibility=View.GONE
-                                            }else{
-                                                //User deletion
-                                                auth.currentUser!!.delete()
-                                                    .addOnCompleteListener(object: OnCompleteListener<Void>{
-                                                        override fun onComplete(p0: Task<Void>) {
-                                                            if(p0.isSuccessful){
-                                                                userRegisterLoading.visibility=View.GONE
-                                                                Toast.makeText(this@RegisterActivity,"User has been deleted!",Toast.LENGTH_SHORT).show()
-                                                            }
-                                                        }
-                                                    })
-                                                userRegisterLoading.visibility=View.GONE
-                                                Toast.makeText(this@RegisterActivity,"User not save!",Toast.LENGTH_SHORT).show()
-                                            }
-                                        }
-                                    })
-
-                                val intent = Intent(this@RegisterActivity,HomeActivity::class.java)
-                                startActivity(intent)
-                                finish()
-
-                                EventBus.getDefault().postSticky(EventbusDataEvents.getUserInfo(emailText,user!!.uid.toString(),passText))
-
-                            } else {
-                                // If sign in fails, display a message to the user.
-                                userRegisterLoading.visibility=View.GONE
-                                Toast.makeText(this@RegisterActivity, "Authentication failed.", Toast.LENGTH_SHORT).show()
-                            }
-                        }
-
-                }
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -217,12 +130,53 @@ class RegisterActivity : AppCompatActivity() {
         })
     }
 
+    private fun saveData(){
+        val user = auth.currentUser
+        val userID = user!!.uid
+
+
+        Toast.makeText(this@RegisterActivity, "Registration is succesfull. ", Toast.LENGTH_SHORT).show()
+
+        var userDetailsRegistration =UserDetails(" ", " ",  " ",0)
+        var userRegistration = Users(emailText,usernameText,nameText,surnameText,userID,userDetailsRegistration)
+
+
+        //Saving the created user to the database
+        ref.child("users").child(userID).setValue(userRegistration)
+            .addOnCompleteListener(object : OnCompleteListener<Void>{
+                override fun onComplete(p0: Task<Void>) {
+                    if(p0.isSuccessful){
+                        Log.e("User Register", "Save is succesful")
+                        userRegisterLoading.visibility=View.GONE
+                    }else{
+                        //User deletion
+                        auth.currentUser!!.delete()
+                            .addOnCompleteListener(object: OnCompleteListener<Void>{
+                                override fun onComplete(p0: Task<Void>) {
+                                    if(p0.isSuccessful){
+                                        userRegisterLoading.visibility=View.GONE
+                                        Log.e("User Register", "User deleted")
+                                    }
+                                }
+                            })
+                        userRegisterLoading.visibility=View.GONE
+                        Log.e("User Register", "Save is not succesful")
+                    }
+                }
+            })
+
+        val intent = Intent(this,LoginActivity::class.java)
+        startActivity(intent)
+        this.finish()
+
+        EventBus.getDefault().postSticky(EventbusDataEvents.getUserInfo(emailText,user!!.uid,passText))
+    }
 
     private fun setupButtonClick(){
         loginRegisterActivity.setOnClickListener {
             val intent = Intent(this, LoginActivity::class.java)
             this.startActivity(intent)
-            finish()
+            this.finish()
         }
         buttonRegister.setOnClickListener {
             userRegisterLoading.visibility=View.VISIBLE

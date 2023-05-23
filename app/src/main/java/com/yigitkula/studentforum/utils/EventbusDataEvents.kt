@@ -1,6 +1,7 @@
 package com.yigitkula.studentforum.utils
 
 import com.yigitkula.studentforum.model.Feedbacks
+import com.yigitkula.studentforum.model.NotificationFeedback
 import com.yigitkula.studentforum.model.Post
 import com.yigitkula.studentforum.model.Users
 
@@ -14,5 +15,9 @@ class EventbusDataEvents {
 
     internal class GetFeedbackSenderID(var senderID: String?)
 
+    internal class GetPostSenderID(var senderID:String?)
+
     internal class GetPostCourseName(var courseName: String?)
+
+    internal class GetNotificationInfo(var notification: NotificationFeedback?)
 }

@@ -19,6 +19,7 @@ import com.google.firebase.ktx.Firebase
 import com.nostra13.universalimageloader.core.ImageLoader
 import com.yigitkula.studentforum.R
 import com.yigitkula.studentforum.model.Feedbacks
+import com.yigitkula.studentforum.model.NotificationFeedback
 import com.yigitkula.studentforum.model.Post
 import com.yigitkula.studentforum.model.Users
 import com.yigitkula.studentforum.profile.ProfileEditFragment
@@ -28,11 +29,13 @@ import com.yigitkula.studentforum.utils.UniversalImageLoaderPost
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.w3c.dom.Text
+import java.text.SimpleDateFormat
 import java.util.*
 
 class QuestionActivity : AppCompatActivity() {
     private lateinit var questionRoot: ConstraintLayout
     private var incomingPostInfo: Post? = null
+    private var incomingFromNotification: NotificationFeedback? = null
 
     private lateinit var tvQuestionCourseName: TextView
     private lateinit var tvQuestionProblem: TextView
@@ -73,38 +76,78 @@ class QuestionActivity : AppCompatActivity() {
 
         EventBus.getDefault().register(this)
         initImageLoader()
-        getPostData()
 
-        val postIdAdapter = incomingPostInfo!!.post_id!!
+        if(incomingPostInfo != null) {
+            getPostData()
+            EventBus.getDefault().postSticky(EventbusDataEvents.GetPostSenderID(incomingPostInfo!!.sender_user!!))
+            val postIdAdapter = incomingPostInfo!!.post_id!!
 
-        val adapter = FeedbackAdapter(this, listViewFeedbacksQuestion,"feedbacks/${postIdAdapter}/")
-        adapter.setOnItemClickListener(object : FeedbackAdapter.OnItemClickListener {
-            override fun onItemClick(feedback: Feedbacks) {
+            val adapter = FeedbackAdapter(this, listViewFeedbacksQuestion,"feedbacks/${postIdAdapter}/")
+            adapter.setOnItemClickListener(object : FeedbackAdapter.OnItemClickListener {
+                override fun onItemClick(feedback: Feedbacks) {
 
+                    questionRoot.visibility=View.GONE
+
+                    var transaction = supportFragmentManager.beginTransaction()
+                    transaction.replace(R.id.questionContainer,ProfileViewFragment())
+                    transaction.addToBackStack(null)
+                    EventBus.getDefault().postSticky(EventbusDataEvents.GetFeedbackSenderID(feedback.senderID))
+
+                    transaction.commit()
+                }
+            })
+            listViewFeedbacksQuestion.adapter=adapter
+            buttonFeedbackQuestionSend.setOnClickListener {
+                sendFeedback()
+            }
+            textViewSenderUsername.setOnClickListener {
                 questionRoot.visibility=View.GONE
-
                 var transaction = supportFragmentManager.beginTransaction()
                 transaction.replace(R.id.questionContainer,ProfileViewFragment())
                 transaction.addToBackStack(null)
-                EventBus.getDefault().postSticky(EventbusDataEvents.GetFeedbackSenderID(feedback.senderID))
 
                 transaction.commit()
+
             }
-        })
-        listViewFeedbacksQuestion.adapter=adapter
-        buttonFeedbackQuestionSend.setOnClickListener {
-            sendFeedback()
-        }
-        textViewSenderUsername.setOnClickListener {
-            questionRoot.visibility=View.GONE
-            var transaction = supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.questionContainer,ProfileViewFragment())
-            transaction.addToBackStack(null)
+            increaseViewCount(incomingPostInfo!!.post_id!!)!!
+        }else{
+            optionalGetData()
+            EventBus.getDefault().postSticky(EventbusDataEvents.GetPostSenderID(incomingFromNotification!!.targetUser!!))
 
-            transaction.commit()
+            val postIdAdapter = incomingFromNotification!!.postId!!
 
+            val adapter = FeedbackAdapter(this, listViewFeedbacksQuestion,"feedbacks/${postIdAdapter}/")
+            adapter.setOnItemClickListener(object : FeedbackAdapter.OnItemClickListener {
+                override fun onItemClick(feedback: Feedbacks) {
+
+                    questionRoot.visibility=View.GONE
+
+                    var transaction = supportFragmentManager.beginTransaction()
+                    transaction.replace(R.id.questionContainer,ProfileViewFragment())
+                    transaction.addToBackStack(null)
+                    EventBus.getDefault().postSticky(EventbusDataEvents.GetFeedbackSenderID(feedback.senderID))
+
+                    transaction.commit()
+                }
+            })
+            listViewFeedbacksQuestion.adapter=adapter
+            buttonFeedbackQuestionSend.setOnClickListener {
+                sendFeedback()
+            }
+            textViewSenderUsername.setOnClickListener {
+                questionRoot.visibility=View.GONE
+                var transaction = supportFragmentManager.beginTransaction()
+                transaction.replace(R.id.questionContainer,ProfileViewFragment())
+                transaction.addToBackStack(null)
+
+                transaction.commit()
+
+
+
+            }
+            val postID = incomingFromNotification!!.postId!!
+            increaseViewCount(postID!!)
         }
-        increaseViewCount(incomingPostInfo!!.post_id!!)
     }
 
 
@@ -116,7 +159,11 @@ class QuestionActivity : AppCompatActivity() {
         textViewPostDate.setText(incomingPostInfo!!.date)
 
         var imgUrl = incomingPostInfo!!.problem_img!!
-        UniversalImageLoaderPost.setImage(imgUrl,questionProblemImg,null,"")
+        if(imgUrl != ""){
+            UniversalImageLoaderPost.setImage(imgUrl,questionProblemImg,null,"")
+        }else{
+            questionProblemImg.visibility=View.GONE
+        }
 
         ref.child("users").child(incomingPostInfo!!.sender_user!!).orderByChild("user_name")
             .addValueEventListener(object: ValueEventListener{
@@ -130,9 +177,53 @@ class QuestionActivity : AppCompatActivity() {
                 }
             })
     }
+
+    fun optionalGetData(){
+        val postID = incomingFromNotification!!.postId!!
+
+        ref.child("posts").child(postID).addListenerForSingleValueEvent(object: ValueEventListener{
+            override fun onDataChange(snapshot: DataSnapshot) {
+                var post = snapshot.getValue(Post::class.java)
+                tvQuestionProblem.setText(post!!.problem)
+                tvQuestionTopic.setText(post!!.topic)
+                tvQuestionCourseName.setText(post!!.course_name)
+                textViewPostDate.setText(post!!.date)
+
+
+                var imgUrl = post!!.problem_img!!
+                if(imgUrl != ""){
+                    UniversalImageLoaderPost.setImage(imgUrl,questionProblemImg,null,"")
+                }else{
+                    questionProblemImg.visibility=View.GONE
+                }
+
+                ref.child("users").child(post!!.sender_user!!).orderByChild("user_name")
+                    .addValueEventListener(object: ValueEventListener{
+                        override fun onDataChange(snapshot: DataSnapshot) {
+                            val senderUser = snapshot.getValue(Users::class.java)
+                            textViewSenderUsername.setText(senderUser!!.user_name!!)
+                        }
+
+                        override fun onCancelled(error: DatabaseError) {
+
+                        }
+                    })
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+
+            }
+        })
+    }
     @Subscribe(sticky = true)
     internal fun onPostInfoEvent(postInfo: EventbusDataEvents.SendPostInfo){
         incomingPostInfo=postInfo.post!!
+
+    }
+
+    @Subscribe(sticky = true)
+    internal fun onPostComingFromNotification(notification: EventbusDataEvents.GetNotificationInfo){
+        incomingFromNotification = notification.notification!!
 
     }
     private fun initImageLoader() {
@@ -143,39 +234,74 @@ class QuestionActivity : AppCompatActivity() {
     }
 
     private fun sendFeedback(){
+        if(incomingPostInfo != null){
+            var feedbackText= editTextFeedbackQuestion.text.toString()
+            val postID = incomingPostInfo!!.post_id.toString()
+            val senderID = auth.uid!!
+            val feedbackID = UUID.randomUUID().toString()
+            val usernameControl = ref.child("users").child(senderID)
 
-        var feedbackText= editTextFeedbackQuestion.text.toString()
-        val postID = incomingPostInfo!!.post_id.toString()
-        val senderID = auth.uid!!
-        val feedbackID = UUID.randomUUID().toString()
-        val usernameControl = ref.child("users").child(senderID)
+            usernameControl.child("user_name").get().addOnSuccessListener { dataSnapshot ->
+                val userName = dataSnapshot.value as String
+                val dateFormat = SimpleDateFormat("dd/M/yyyy hh:mm")
+                val date = dateFormat.format(Date())
+                var sendFeedback = Feedbacks(postID,feedbackID,senderID,userName,feedbackText,date,0)
 
-        usernameControl.child("user_name").get().addOnSuccessListener { dataSnapshot ->
-            val userName = dataSnapshot.value as String
-            val date = Date().toString()
-            var sendFeedback = Feedbacks(postID,feedbackID,senderID,userName,feedbackText,date)
-
-            if (feedbackText != null){
-                ref.child("feedbacks").child(postID).child(feedbackID).setValue(sendFeedback)
-                    .addOnCompleteListener(object : OnCompleteListener<Void> {
-                        override fun onComplete(p0: Task<Void>) {
-                            if(p0.isSuccessful){
-                                editTextFeedbackQuestion.text.clear()
-                                incerementRank()
-                                Toast.makeText(this@QuestionActivity,"Feedback sent", Toast.LENGTH_SHORT).show()
-                            }else{
-                                Toast.makeText(this@QuestionActivity,"Feedback not sent", Toast.LENGTH_SHORT).show()
+                if (feedbackText != null){
+                    ref.child("feedbacks").child(postID).child(feedbackID).setValue(sendFeedback)
+                        .addOnCompleteListener(object : OnCompleteListener<Void> {
+                            override fun onComplete(p0: Task<Void>) {
+                                if(p0.isSuccessful){
+                                    editTextFeedbackQuestion.text.clear()
+                                    Toast.makeText(this@QuestionActivity,"Feedback sent", Toast.LENGTH_SHORT).show()
+                                }else{
+                                    Toast.makeText(this@QuestionActivity,"Feedback not sent", Toast.LENGTH_SHORT).show()
+                                }
                             }
-                        }
-                    })
-            }else{
-                Toast.makeText(this@QuestionActivity,"Feedback field is null!", Toast.LENGTH_SHORT).show()
+                        })
+                }else{
+                    Toast.makeText(this@QuestionActivity,"Feedback field is null!", Toast.LENGTH_SHORT).show()
+                }
+            }.addOnFailureListener{exception ->
+                Log.e("username", exception.message.toString())
             }
-        }.addOnFailureListener{exception ->
-            Log.e("username", exception.message.toString())
+        }else{
+            var feedbackText= editTextFeedbackQuestion.text.toString()
+            val postID = incomingFromNotification!!.postId!!
+            val senderID = auth.uid!!
+            val feedbackID = UUID.randomUUID().toString()
+            val usernameControl = ref.child("users").child(senderID)
+
+            usernameControl.child("user_name").get().addOnSuccessListener { dataSnapshot ->
+                val userName = dataSnapshot.value as String
+                val dateFormat = SimpleDateFormat("dd/M/yyyy hh:mm")
+                val date = dateFormat.format(Date())
+                var sendFeedback = Feedbacks(postID,feedbackID,senderID,userName,feedbackText,date,0)
+
+                if (feedbackText != null){
+                    ref.child("feedbacks").child(postID).child(feedbackID).setValue(sendFeedback)
+                        .addOnCompleteListener(object : OnCompleteListener<Void> {
+                            override fun onComplete(p0: Task<Void>) {
+                                if(p0.isSuccessful){
+                                    editTextFeedbackQuestion.text.clear()
+                                    Toast.makeText(this@QuestionActivity,"Feedback sent", Toast.LENGTH_SHORT).show()
+                                }else{
+                                    Toast.makeText(this@QuestionActivity,"Feedback not sent", Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        })
+                }else{
+                    Toast.makeText(this@QuestionActivity,"Feedback field is null!", Toast.LENGTH_SHORT).show()
+                }
+            }.addOnFailureListener{exception ->
+                Log.e("username", exception.message.toString())
+            }
         }
 
     }
+
+
+
     private fun increaseViewCount(questionId: String) {
         val userId = FirebaseAuth.getInstance().currentUser?.uid
         if (userId != null) {
@@ -208,52 +334,51 @@ class QuestionActivity : AppCompatActivity() {
                                 }
                             }
                         })
+
                     }
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    // Handle the error
+                    Log.e("increaseView", "Error")
                 }
             })
         }
-        ref.child("posts").child(incomingPostInfo!!.post_id!!).child("viewCount")
-            .addListenerForSingleValueEvent(object : ValueEventListener{
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    val views = snapshot.getValue(Int::class.java)
-                    textViewViews.setText(views.toString())
-                }
 
-                override fun onCancelled(error: DatabaseError) {
-                    Log.e("viewsError","views do not add")
-                }
-            })
-    }
-    private fun incerementRank(){
-       ref.child("users").child(auth.uid!!).child("user_detail").child("rank")
-           .addListenerForSingleValueEvent(object : ValueEventListener{
-               override fun onDataChange(snapshot: DataSnapshot) {
-                   var rank = snapshot.getValue(Int::class.java)
-                   Log.e("rank value",rank.toString())
-                   rank = rank!!.plus(1)
-                   Log.e("rank value",rank.toString())
-                   ref.child("users").child(auth.uid!!).child("user_detail").child("rank")
-                       .setValue(rank)
-                       .addOnCompleteListener {
-                           Log.e("Rank","Rank Plus 1 ")
-                       }
-                       .addOnFailureListener{
-                           Log.e("Rank","Rank didn't plus 1"+it.message.toString())
-                       }
-               }
+        if(incomingPostInfo != null){
+            ref.child("posts").child(incomingPostInfo!!.post_id!!).child("viewCount")
+                .addListenerForSingleValueEvent(object : ValueEventListener{
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val views = snapshot.getValue(Int::class.java)
+                        if(!snapshot.exists()){
+                            textViewViews.text="0"
+                        }else{
+                            textViewViews.setText(views.toString())
+                        }
+                    }
 
-               override fun onCancelled(error: DatabaseError) {
-                   TODO("Not yet implemented")
-               }
-           })
-    }
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.e("viewsError","views do not add")
+                    }
+                })
+        }else{
+            val postID = incomingFromNotification!!.postId!!
+            ref.child("posts").child(postID!!).child("viewCount")
+                .addListenerForSingleValueEvent(object : ValueEventListener{
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val views = snapshot.getValue(Int::class.java)
+                        if(textViewViews.text=="null"){
+                            textViewViews.text="0"
+                        }else{
+                            textViewViews.setText(views.toString())
+                        }
 
-    override fun onStart() {
-        super.onStart()
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.e("viewsError","views do not add")
+                    }
+                })
+        }
 
     }
 

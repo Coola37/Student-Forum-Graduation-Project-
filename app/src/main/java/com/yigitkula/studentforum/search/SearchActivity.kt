@@ -4,22 +4,21 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.SearchView
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.yigitkula.studentforum.R
 import com.yigitkula.studentforum.adapter.CourseNameAdapter
 import com.yigitkula.studentforum.loginAndRegister.LoginActivity
-import com.yigitkula.studentforum.model.Post
-import com.yigitkula.studentforum.profile.ProfileEditFragment
 import com.yigitkula.studentforum.utils.BottomNavigationViewHelper
 import com.yigitkula.studentforum.utils.EventbusDataEvents
 import org.greenrobot.eventbus.EventBus
@@ -70,18 +69,27 @@ class SearchActivity : AppCompatActivity() {
 
         val eventListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val duplicateCourseNames = mutableListOf<String>()
                 for (snapshot in dataSnapshot.children) {
-                    val userName = snapshot.child("course_name").getValue(String::class.java)
-                    userName?.let { courseNames.add(it) }
+                    val courseName = snapshot.child("course_name").getValue(String::class.java)
+                    courseName?.let { courseNames.add(it) }
                 }
-                val duplicatedUserNames = courseNames.groupingBy { it }.eachCount().filter { it.value > 1 }.keys
-                val uniqueUserName = duplicatedUserNames.first()
+                val groupedCourseNames = courseNames.groupBy { it }
+                for ((name, group) in groupedCourseNames) {
+                    if (group.size > 1) {
+                        duplicateCourseNames.add(name)
+                    }
+                }
 
-                courseNames.removeAll(duplicatedUserNames)
-                courseNames.add(uniqueUserName)
+                courseNames.removeAll(duplicateCourseNames)
 
-                searchRecyclerView.layoutManager = LinearLayoutManager(this@SearchActivity)
-                adapter = CourseNameAdapter(courseNames) { courseName ->
+                val uniqueCourseNames = mutableListOf<String>()
+                uniqueCourseNames.addAll(duplicateCourseNames.distinct())
+
+                courseNames.addAll(uniqueCourseNames)
+
+                val layoutManager = LinearLayoutManager(this@SearchActivity)
+                val adapter = CourseNameAdapter(courseNames) { courseName ->
                     searchRoot.visibility= View.GONE
                     var transaction = supportFragmentManager.beginTransaction()
                     transaction.replace(R.id.searchContainer, DetailSearchFragment())
@@ -89,10 +97,10 @@ class SearchActivity : AppCompatActivity() {
 
                     transaction.commit()
 
-                    Toast.makeText(this@SearchActivity, "Clicked on $courseName", Toast.LENGTH_SHORT).show()
                     EventBus.getDefault().postSticky(EventbusDataEvents.GetPostCourseName(courseName))
                 }
-                searchRecyclerView.adapter=adapter
+                searchRecyclerView.layoutManager = layoutManager
+                searchRecyclerView.adapter = adapter
 
                 searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                     override fun onQueryTextSubmit(query: String?): Boolean {
@@ -101,73 +109,19 @@ class SearchActivity : AppCompatActivity() {
 
                     override fun onQueryTextChange(newText: String?): Boolean {
                         newText?.let { filterList(it) }
+
                         return true
                     }
                 })
-
             }
-
             override fun onCancelled(databaseError: DatabaseError) {
                 println("Error: ${databaseError.message}")
             }
         }
-
         courseRef.addValueEventListener(eventListener)
-
-
     }
 
-    private fun search(searcV: SearchView){
-        searcV.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                return false
-            }
-            override fun onQueryTextChange(newText: String?): Boolean {
-                if (newText != null) {
 
-                    val query = FirebaseDatabase.getInstance().getReference("posts")
-                        .orderByChild("course_name")
-                        .startAt(newText.uppercase())
-                        .endAt(newText.uppercase() + "\uf8ff")
-
-
-                    val options = FirebaseRecyclerOptions.Builder<Post>()
-                        .setQuery(query, Post::class.java)
-                        .build()
-
-                    //adapter.updateOptions(options)
-                }
-                return true
-            }
-
-        })
-
-        searcV.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                return false
-            }
-
-            override fun onQueryTextChange(newText: String?): Boolean {
-                if (newText != null) {
-
-                    val query = FirebaseDatabase.getInstance().getReference("posts")
-                        .orderByChild("course_name")
-                        .startAt(newText.lowercase())
-                        .endAt(newText.lowercase() + "\uf8ff")
-
-
-                    val options = FirebaseRecyclerOptions.Builder<Post>()
-                        .setQuery(query, Post::class.java)
-                        .build()
-
-                    //adapter.updateOptions(options)
-                }
-                return true
-            }
-
-        })
-
-    }
 
     fun setupNavigationView(){
         BottomNavigationViewHelper.setupNavigation(this,bottomNavigationView)

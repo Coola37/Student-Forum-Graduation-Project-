@@ -10,6 +10,40 @@
         android:layout_marginEnd="12dp">
 
         <TextView
+            android:id="@+id/textViewTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="2dp"
+            android:text="Likes:"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/textViewLikes"
+            app:layout_constraintTop_toBottomOf="@+id/textViewBody" />
+
+        <TextView
+            android:id="@+id/textViewLikes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:text="0"
+            android:textColor="#1E88E5"
+            android:textSize="19sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/imageViewLike" />
+
+        <ImageView
+            android:id="@+id/imageViewLike"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginBottom="6dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/textViewLikes"
+            app:srcCompat="@drawable/like_active" />
+
+        <TextView
             android:id="@+id/textView22"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -20,13 +54,14 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/textViewFeedback"
+            android:id="@+id/textViewBody"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLength="350"
             android:maxLines="50"
             android:text="Feedback"
+            android:paddingEnd="4dp"
             android:textSize="18sp"
             app:layout_constraintStart_toStartOf="@+id/feedbackUsername"
             app:layout_constraintTop_toBottomOf="@+id/feedbackUsername" />
@@ -44,6 +79,19 @@
             android:textSize="18sp"
             android:textStyle="italic"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textViewFBdate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="1dp"
+            android:text="Date"
+            android:textColor="#B388FF"
+            android:textSize="18sp"
+            android:textStyle="italic"
+            app:layout_constraintStart_toEndOf="@+id/feedbackUsername"
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 

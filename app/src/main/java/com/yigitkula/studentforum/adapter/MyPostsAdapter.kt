@@ -12,6 +12,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.yigitkula.studentforum.R
 import com.yigitkula.studentforum.model.Post
+import com.yigitkula.studentforum.model.Users
 import com.yigitkula.studentforum.utils.EventbusDataEvents
 import org.greenrobot.eventbus.EventBus
 import java.util.*
@@ -68,8 +69,8 @@ class MyPostsAdapter(private val dataList: List<Post>, private val clickListener
         FirebaseDatabase.getInstance().reference.child("users").child(senderUser!!).child("user_name")
             .addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    val username = snapshot.getValue(String::class.java)
-                    holder.textViewSenderUser.text=username
+                    val user = snapshot.getValue(String::class.java)
+                    holder.textViewSenderUser.text=user
                 }
 
                 override fun onCancelled(error: DatabaseError) {

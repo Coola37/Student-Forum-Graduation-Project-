@@ -6,17 +6,14 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
 import com.google.firebase.ktx.Firebase
 import com.yigitkula.studentforum.R
-import com.yigitkula.studentforum.home.HomeActivity
 import com.yigitkula.studentforum.loginAndRegister.LoginActivity
 import com.yigitkula.studentforum.model.NotificationFeedback
-import com.yigitkula.studentforum.model.Post
 import com.yigitkula.studentforum.utils.BottomNavigationViewHelper
 import com.yigitkula.studentforum.view.QuestionActivity
 
@@ -52,7 +49,6 @@ class NotifcationsActivity : AppCompatActivity() {
                     }
                     adapter.notifyDataSetChanged()
                 }
-
                 override fun onCancelled(error: DatabaseError) {
 
                 }
@@ -68,7 +64,6 @@ class NotifcationsActivity : AppCompatActivity() {
         setupNavigationView()
         setupAuthListener()
     }
-
     fun setupNavigationView(){
 
         BottomNavigationViewHelper.setupNavigation(this,bottomNavigationView)
@@ -77,7 +72,6 @@ class NotifcationsActivity : AppCompatActivity() {
         menuItem.setChecked(true)
 
     }
-
     private fun setupAuthListener() {
         authListener=object : FirebaseAuth.AuthStateListener {
             override fun onAuthStateChanged(p0: FirebaseAuth) {

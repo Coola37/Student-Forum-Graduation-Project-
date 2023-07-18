@@ -34,15 +34,12 @@ class LoginActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
     private lateinit var ref: DatabaseReference
-    private lateinit var authListener: FirebaseAuth.AuthStateListener
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
         auth = Firebase.auth
-
         ref= FirebaseDatabase.getInstance().reference
 
         buttonLogin=findViewById(R.id.buttonRegister)
@@ -50,14 +47,10 @@ class LoginActivity : AppCompatActivity() {
         emailLogin=findViewById(R.id.emailRegister)
         passwordLogin=findViewById(R.id.passwordLogin)
 
-
         setupButtonClick()
 
 
     }
-
-
-
     private fun setupButtonClick(){
         buttonLogin.setOnClickListener {
             progresBarLogin=findViewById(R.id.progressBarLogin)
@@ -71,8 +64,6 @@ class LoginActivity : AppCompatActivity() {
             finish()
         }
     }
-
-
 
     private fun authPerfomLogin(){
 
@@ -96,6 +87,7 @@ class LoginActivity : AppCompatActivity() {
                         finish()
                     }else{
                         Toast.makeText(this,"Please verify your Email!",Toast.LENGTH_SHORT).show()
+                        progresBarLogin.visibility= View.GONE
                     }
 
 
@@ -126,32 +118,4 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupAuthListener() {
-        authListener=object :AuthStateListener{
-            override fun onAuthStateChanged(p0: FirebaseAuth) {
-                var user= FirebaseAuth.getInstance().currentUser
-                if(user != null){
-
-                    val intent = Intent(this@LoginActivity, HomeActivity::class.java)
-                    this@LoginActivity.startActivity(intent)
-                    finish()
-
-                }else{
-                    return
-                }
-            }
-        }
-    }
-
-    override fun onStart() {
-        super.onStart()
-       // auth.addAuthStateListener(authListener)
-    }
-
-    override fun onStop() {
-        super.onStop()
-       /* if(authListener != null){
-         //   auth.removeAuthStateListener(authListener)
-        }*/
-    }
 }

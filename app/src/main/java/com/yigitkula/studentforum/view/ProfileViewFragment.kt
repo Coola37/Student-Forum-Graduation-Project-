@@ -68,7 +68,6 @@ class ProfileViewFragment : Fragment() {
         ref=FirebaseDatabase.getInstance().reference
 
         getData()
-       // Toast.makeText(activity,incFeedbackId,Toast.LENGTH_SHORT).show()
         initImageLoader()
         return view
     }

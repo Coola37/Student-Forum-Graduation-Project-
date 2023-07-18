@@ -9,9 +9,7 @@ class Post {
     var problem: String? = null
     var problem_img: String? = null
     var date: String? = null
-
     constructor()
-
     constructor(
         post_id: String?,
         sender_user: String?,
@@ -38,5 +36,4 @@ class Post {
                 course_name == other.course_name &&
                 topic == other.topic
     }
-
 }

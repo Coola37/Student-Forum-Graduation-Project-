@@ -68,12 +68,19 @@ class ProfileActivity : AppCompatActivity() {
 
         initImageLoader()
 
-
-
         setupNavigationView()
         setupButtons()
 
         getUserData()
+
+        buttonProfileEdit.setOnClickListener {
+            profileRoot.visibility=View.GONE
+            var transaction = supportFragmentManager.beginTransaction()
+            transaction.replace(R.id.profileContainer,ProfileEditFragment())
+            transaction.addToBackStack("addedProfileFragment")
+
+            transaction.commit()
+        }
     }
     private fun initImageLoader() {
 
@@ -91,8 +98,7 @@ class ProfileActivity : AppCompatActivity() {
         ref.child("users").child(mUser.uid).addValueEventListener(object: ValueEventListener{
             override fun onDataChange(snapshot: DataSnapshot) {
 
-                    var readUserData= snapshot.getValue(Users::class.java)
-
+                var readUserData= snapshot.getValue(Users::class.java)
 
                 EventBus.getDefault().postSticky(EventbusDataEvents.SendUserInformation(readUserData!!))
                 buttonProfileEdit.isEnabled=true
@@ -123,14 +129,7 @@ class ProfileActivity : AppCompatActivity() {
     }
 
     fun setupButtons(){
-        buttonProfileEdit.setOnClickListener {
-            profileRoot.visibility=View.GONE
-            var transaction = supportFragmentManager.beginTransaction()
-            transaction.replace(R.id.profileContainer,ProfileEditFragment())
-            transaction.addToBackStack("addedProfileFragment")
 
-            transaction.commit()
-        }
 
         buttonSettings.setOnClickListener {
             var intent = Intent(this,ProfileSettingActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)

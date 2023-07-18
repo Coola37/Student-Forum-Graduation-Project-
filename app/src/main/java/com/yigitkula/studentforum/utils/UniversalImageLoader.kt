@@ -34,7 +34,6 @@ class UniversalImageLoader(val mContext: Context) {
                 .memoryCache(WeakMemoryCache())
                 .diskCacheSize(100 * 1024 * 1024).build()
         }
-
     companion object {
         private val defaultImage = R.drawable.ic_default_profile
         fun setImage(
@@ -43,10 +42,6 @@ class UniversalImageLoader(val mContext: Context) {
             progressBar: ProgressBar?,
             initialPath: String
         ) {
-
-            //imgUrl:facebook.com/images/logo.jpeg
-            //initialPath:http://
-
             val imageLoader = ImageLoader.getInstance()
             imageLoader.displayImage(initialPath + imgURL, imgView, object : ImageLoadingListener {
                 override fun onLoadingStarted(imageUri: String?, view: View?) {
@@ -78,10 +73,7 @@ class UniversalImageLoader(val mContext: Context) {
                     if (progressBar != null)
                         progressBar.visibility = View.GONE
                 }
-
             })
-
-
         }
     }
 }

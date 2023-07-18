@@ -34,13 +34,11 @@ class NotificationAdapter(
 
     inner class FeedbackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(feedback: NotificationFeedback) {
-            // Verileri görsel öğelerle ilişkilendirme işlemleri
             var textViewTitle = itemView.findViewById<TextView>(R.id.textViewTitle)
             textViewTitle.text = feedback.title
             var textViewBody = itemView.findViewById<TextView>(R.id.textViewBody)
             textViewBody.text = feedback.body
             var targetUser:String = "targetUser"
-            // Diğer görsel öğeleri güncelleme işlemleri
             var notificationFeedback = NotificationFeedback(feedback.targetUser,feedback.title, feedback.body, feedback.postId, feedback.feedbackId)
             EventBus.getDefault().postSticky(EventbusDataEvents.GetNotificationInfo(notificationFeedback))
 

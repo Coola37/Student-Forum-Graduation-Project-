@@ -76,7 +76,7 @@ class QuestionActivity : AppCompatActivity() {
 
         EventBus.getDefault().register(this)
         initImageLoader()
-
+        Log.e("postInfo", incomingPostInfo!!.sender_user!!)
         if(incomingPostInfo != null) {
             getPostData()
             EventBus.getDefault().postSticky(EventbusDataEvents.GetPostSenderID(incomingPostInfo!!.sender_user!!))
@@ -141,16 +141,11 @@ class QuestionActivity : AppCompatActivity() {
                 transaction.addToBackStack(null)
 
                 transaction.commit()
-
-
-
             }
             val postID = incomingFromNotification!!.postId!!
             increaseViewCount(postID!!)
         }
     }
-
-
 
     fun getPostData(){
         tvQuestionProblem.setText(incomingPostInfo!!.problem)
@@ -165,19 +160,17 @@ class QuestionActivity : AppCompatActivity() {
             questionProblemImg.visibility=View.GONE
         }
 
-        ref.child("users").child(incomingPostInfo!!.sender_user!!).orderByChild("user_name")
+        ref.child("users").child(incomingPostInfo!!.sender_user!!)
             .addValueEventListener(object: ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val senderUser = snapshot.getValue(Users::class.java)
-                    textViewSenderUsername.setText(senderUser!!.user_name!!)
+                    textViewSenderUsername.text = senderUser!!.user_name!!
                 }
-
                 override fun onCancelled(error: DatabaseError) {
                     TODO("Not yet implemented")
                 }
             })
     }
-
     fun optionalGetData(){
         val postID = incomingFromNotification!!.postId!!
 
@@ -209,7 +202,6 @@ class QuestionActivity : AppCompatActivity() {
                         }
                     })
             }
-
             override fun onCancelled(error: DatabaseError) {
 
             }
@@ -232,7 +224,6 @@ class QuestionActivity : AppCompatActivity() {
         ImageLoader.getInstance().init(universalImageLoaderPost.config)
 
     }
-
     private fun sendFeedback(){
         if(incomingPostInfo != null){
             var feedbackText= editTextFeedbackQuestion.text.toString()
@@ -297,10 +288,7 @@ class QuestionActivity : AppCompatActivity() {
                 Log.e("username", exception.message.toString())
             }
         }
-
     }
-
-
 
     private fun increaseViewCount(questionId: String) {
         val userId = FirebaseAuth.getInstance().currentUser?.uid
@@ -330,20 +318,18 @@ class QuestionActivity : AppCompatActivity() {
                                         userViewsRef.setValue(true)
                                     }
                                 } else {
-                                    // Handle the error
+                                    Log.e("IncreaseViewCount","Error")
                                 }
                             }
                         })
 
                     }
                 }
-
                 override fun onCancelled(error: DatabaseError) {
                     Log.e("increaseView", "Error")
                 }
             })
         }
-
         if(incomingPostInfo != null){
             ref.child("posts").child(incomingPostInfo!!.post_id!!).child("viewCount")
                 .addListenerForSingleValueEvent(object : ValueEventListener{
@@ -373,7 +359,6 @@ class QuestionActivity : AppCompatActivity() {
                         }
 
                     }
-
                     override fun onCancelled(error: DatabaseError) {
                         Log.e("viewsError","views do not add")
                     }
@@ -381,7 +366,6 @@ class QuestionActivity : AppCompatActivity() {
         }
 
     }
-
     override fun onStop() {
         super.onStop()
         EventBus.getDefault().unregister(this)

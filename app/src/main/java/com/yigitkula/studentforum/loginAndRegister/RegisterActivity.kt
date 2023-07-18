@@ -60,9 +60,6 @@ class RegisterActivity : AppCompatActivity() {
         auth = Firebase.auth
         ref=FirebaseDatabase.getInstance().reference
 
-
-
-
         setupButtonClick()
     }
     private fun performRegister() {
@@ -115,7 +112,6 @@ class RegisterActivity : AppCompatActivity() {
                                         }
 
                                 } else {
-                                    // If sign in fails, display a message to the user.
                                     userRegisterLoading.visibility=View.GONE
                                     Toast.makeText(this@RegisterActivity, "Registration failed.", Toast.LENGTH_SHORT).show()
                                 }
@@ -141,7 +137,6 @@ class RegisterActivity : AppCompatActivity() {
         var userRegistration = Users(emailText,usernameText,nameText,surnameText,userID,userDetailsRegistration)
 
 
-        //Saving the created user to the database
         ref.child("users").child(userID).setValue(userRegistration)
             .addOnCompleteListener(object : OnCompleteListener<Void>{
                 override fun onComplete(p0: Task<Void>) {
@@ -149,7 +144,6 @@ class RegisterActivity : AppCompatActivity() {
                         Log.e("User Register", "Save is succesful")
                         userRegisterLoading.visibility=View.GONE
                     }else{
-                        //User deletion
                         auth.currentUser!!.delete()
                             .addOnCompleteListener(object: OnCompleteListener<Void>{
                                 override fun onComplete(p0: Task<Void>) {

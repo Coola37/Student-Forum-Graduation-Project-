@@ -12,22 +12,3 @@ plugins {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
-
-
-/*
-build.gradle (project-level)
-
-    Add rules to include the Google Services Gradle plugin:
-        classpath 'com.google.gms:google-services:4.3.15'
-
-
-
-app/build.gradle
-
-    Apply the Google Services Gradle plugin:
-        apply plugin: 'com.google.gms.google-services'
-
-    Add the library dependency:
-        implementation 'com.google.firebase:firebase-auth-ktx:21.2.0'
-
- */

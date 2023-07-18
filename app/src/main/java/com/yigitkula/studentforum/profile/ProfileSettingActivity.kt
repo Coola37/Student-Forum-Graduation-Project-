@@ -91,8 +91,6 @@ class ProfileSettingActivity : AppCompatActivity() {
             this.startActivity(intent)
             finish()
         }
-
-
     }
 
     fun setupToolbar(){
@@ -100,7 +98,6 @@ class ProfileSettingActivity : AppCompatActivity() {
             onBackPressed()
         }
     }
-
     fun setupNavigationView(){
         BottomNavigationViewHelper.setupNavigation(this, bottomNavigationView)
         var menu=bottomNavigationView.menu
@@ -108,7 +105,6 @@ class ProfileSettingActivity : AppCompatActivity() {
         menuItem.setChecked(true)
 
     }
-
 
     override fun onBackPressed() {
         profileSettingsRoot.visibility=View.VISIBLE

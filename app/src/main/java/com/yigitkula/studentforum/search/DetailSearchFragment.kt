@@ -23,8 +23,6 @@ import com.yigitkula.studentforum.utils.EventbusDataEvents
 import com.yigitkula.studentforum.view.QuestionActivity
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
-
-
 class DetailSearchFragment : Fragment() {
     private lateinit var fragmentSearchView: android.widget.SearchView
     private lateinit var recyclerViewFragment: RecyclerView
@@ -100,22 +98,15 @@ class DetailSearchFragment : Fragment() {
             override fun onCancelled(databaseError: DatabaseError) {
             }
         }
-
-
         postsRef.addValueEventListener(postListener)
-
 
         return view
     }
-
-
-
     @Subscribe(sticky = true)
     internal fun onPostInfoEvent(postInfo: EventbusDataEvents.GetPostCourseName){
         coursCode = postInfo.courseName
 
     }
-
     override fun onAttach(context: Context) {
         super.onAttach(context)
         EventBus.getDefault().register(this)
@@ -124,7 +115,6 @@ class DetailSearchFragment : Fragment() {
         super.onDetach()
         EventBus.getDefault().unregister(this)
     }
-
     private fun setupAuthListener() {
         authListener = object : FirebaseAuth.AuthStateListener {
             override fun onAuthStateChanged(p0: FirebaseAuth) {

@@ -4,53 +4,65 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.yigitkula.studentforum.R
 import java.util.*
 
-class CourseNameAdapter(private val dataList: List<String>, private val clickListener: ((String) -> Unit)?) : RecyclerView.Adapter<CourseNameAdapter.ViewHolder>() {
+class CourseNameAdapter(private val clickListener: ((String) -> Unit)?) :
+    ListAdapter<String, CourseNameAdapter.ViewHolder>(CourseNameDiffCallback()) {
 
-    private var filteredList = mutableListOf<String>()
+    private val originalList: MutableList<String> = mutableListOf()
 
-    init {
-        filteredList.addAll(dataList)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val view =
+            LayoutInflater.from(parent.context).inflate(R.layout.search_course_name_item, parent, false)
+        return ViewHolder(view)
+    }
+
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val courseName = getItem(position)
+        holder.bind(courseName)
     }
 
     fun filterList(text: String) {
-        filteredList.clear()
-        if (text.isEmpty()) {
-            filteredList.addAll(dataList)
+        val filterPattern = text.lowercase(Locale.getDefault()).trim()
+        val filteredList = if (filterPattern.isEmpty()) {
+            ArrayList(originalList)
         } else {
-            val filterPattern = text.lowercase(Locale.getDefault()).trim()
-            for (courseName in dataList) {
-                if (courseName.lowercase(Locale.getDefault()).contains(filterPattern)) {
-                    filteredList.add(courseName)
-                }
-            }
+            originalList.filter { it.lowercase(Locale.getDefault()).contains(filterPattern) }
         }
-        notifyDataSetChanged()
+        submitList(filteredList)
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
-        val textView: TextView = itemView.findViewById(R.id.textViewCourseGroupName)
+        private val textView: TextView = itemView.findViewById(R.id.textViewCourseGroupName)
 
         init {
             itemView.setOnClickListener(this)
         }
 
-        override fun onClick(v: View?) {
-            clickListener?.invoke(filteredList[position])
+        fun bind(courseName: String) {
+            textView.text = courseName
+        }
+
+        override fun onClick(v: View) {
+            val position = adapterPosition
+            if (position != RecyclerView.NO_POSITION) {
+                val courseName = getItem(position)
+                clickListener?.invoke(courseName)
+            }
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.search_course_name_item, parent, false)
-        return ViewHolder(view)
-    }
+    private class CourseNameDiffCallback : DiffUtil.ItemCallback<String>() {
+        override fun areItemsTheSame(oldItem: String, newItem: String): Boolean {
+            return oldItem == newItem
+        }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.textView.text = filteredList[position]
+        override fun areContentsTheSame(oldItem: String, newItem: String): Boolean {
+            return oldItem == newItem
+        }
     }
-
-    override fun getItemCount() = filteredList.size
 }

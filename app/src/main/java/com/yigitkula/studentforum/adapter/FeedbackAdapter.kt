@@ -75,23 +75,7 @@ class FeedbackAdapter(context: Context, listView: ListView, path: String) : Base
         date.text = data.date
 
         val imgLike = view.findViewById<ImageView>(R.id.imageViewLike)
-       /* FirebaseDatabase.getInstance().reference.child("likes").child("clickHistory")
-            .child(data.senderID!!).child(data.feedbackID!!).addListenerForSingleValueEvent(object : ValueEventListener{
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    if (snapshot.exists()){
-                        val bitmap = BitmapFactory.decodeResource(context.resources, R.drawable.like_active)
-                        imgLike.setImageBitmap(bitmap)
-                    }
-                    else{
-                        Log.e("feedbackLikeImg", "no change")
-                    }
-                }
 
-                override fun onCancelled(error: DatabaseError) {
-                    Log.e("feedbackLikeImg", "Do not read clik history")
-                }
-            })
-*/
         username.setOnClickListener {
             onItemClickListener?.onItemClick(data)
         }

@@ -41,7 +41,7 @@
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextNewPassword2" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextTextNewEmail" />
 
     <EditText
         android:id="@+id/editTextTextNewEmail2"
@@ -59,7 +59,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textView14" />
 
     <EditText
-        android:id="@+id/editTextTextNewPassword2"
+        android:id="@+id/editTextTextNewEmail"
         android:layout_width="0dp"
         android:layout_height="48dp"
         android:hint="Enter the e-mail"
@@ -73,7 +73,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textView13" />
 
     <EditText
-        android:id="@+id/editTextTextCurrentPassword"
+        android:id="@+id/editTextTextCurrentEmail"
         android:layout_width="0dp"
         android:textAlignment="center"
         android:layout_height="48dp"
@@ -110,7 +110,7 @@
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextCurrentPassword" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextTextCurrentEmail" />
 
     <EditText
         android:id="@+id/editTextNewPassword"

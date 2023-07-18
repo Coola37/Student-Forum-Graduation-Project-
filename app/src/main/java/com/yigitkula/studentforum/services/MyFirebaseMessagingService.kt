@@ -23,18 +23,14 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     private lateinit var ref: DatabaseReference
     private lateinit var auth: FirebaseAuth
     override fun onMessageReceived(message: RemoteMessage) {
-
         auth = FirebaseAuth.getInstance()
         ref = FirebaseDatabase.getInstance().reference
-
-
         val notificationID = UUID.randomUUID().toString()
         var user =  auth.uid
         var data = message.data
         var notiTitle:String? = message.notification!!.title
         var notiBody:String? = message.notification!!.body
         //var notification = NotificationFeedback(user, notiTitle, notiBody, data)
-
 
        /* ref.child("notification").child("feedback").child(user!!).child(notificationID).setValue(notification)
             .addOnCompleteListener(object: OnCompleteListener<Void>{
@@ -47,14 +43,10 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                 }
             })*/
     }
-
-
-
     override fun onNewToken(token: String) {
         var newToken = token
         saveNewTokenInDatabase(newToken)
     }
-
     private fun saveNewTokenInDatabase(newToken: String){
         if(FirebaseAuth.getInstance().currentUser != null){
             FirebaseDatabase.getInstance().reference

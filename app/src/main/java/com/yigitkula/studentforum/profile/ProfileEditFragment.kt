@@ -147,7 +147,7 @@ class ProfileEditFragment : Fragment() {
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-
+                    Log.e("usernameUpdate", error.message)
                 }
             })
 

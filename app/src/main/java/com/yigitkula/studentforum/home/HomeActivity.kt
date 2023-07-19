@@ -19,6 +19,8 @@ import com.yigitkula.studentforum.utils.EventbusDataEvents
 import com.yigitkula.studentforum.view.QuestionActivity
 import com.yigitkula.studentforum.viewModel.HomeViewModel
 import org.greenrobot.eventbus.EventBus
+import javax.inject.Inject
+
 
 class HomeActivity : AppCompatActivity() {
 
@@ -32,6 +34,7 @@ class HomeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
+
 
         viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
         setupViews()

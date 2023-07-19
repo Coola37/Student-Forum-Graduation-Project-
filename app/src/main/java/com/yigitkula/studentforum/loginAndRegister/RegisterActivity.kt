@@ -7,6 +7,8 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import com.google.android.material.button.MaterialButton
@@ -19,6 +21,8 @@ import com.yigitkula.studentforum.home.HomeActivity
 import com.yigitkula.studentforum.model.UserDetails
 import com.yigitkula.studentforum.model.Users
 import com.yigitkula.studentforum.utils.EventbusDataEvents
+import com.yigitkula.studentforum.viewModel.RegisterViewModel
+import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
 
 class RegisterActivity : AppCompatActivity() {
@@ -43,6 +47,7 @@ class RegisterActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
     private lateinit var ref: DatabaseReference
+    private lateinit var viewModel: RegisterViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
@@ -60,72 +65,36 @@ class RegisterActivity : AppCompatActivity() {
         auth = Firebase.auth
         ref=FirebaseDatabase.getInstance().reference
 
+        viewModel = ViewModelProvider(this)[RegisterViewModel::class.java]
+
         setupButtonClick()
     }
     private fun performRegister() {
-        emailText = emailRegister.text.toString()
-        passText = passwordRegister.text.toString()
-        nameText= nameRegister.text.toString()
-        usernameText=usernameRegister.text.toString()
-        surnameText=surnameRegister.text.toString()
+        val emailText = emailRegister.text.toString()
+        val passText = passwordRegister.text.toString()
+        val nameText = nameRegister.text.toString()
+        val usernameText = usernameRegister.text.toString()
+        val surnameText = surnameRegister.text.toString()
 
-        if(emailText.isEmpty() || passText.isEmpty() || usernameText.isEmpty() || nameText.isEmpty() || surnameText.isEmpty()){
-            Toast.makeText(this,"Please fill all fields",Toast.LENGTH_SHORT).show()
+        if (emailText.isEmpty() || passText.isEmpty() || usernameText.isEmpty() || nameText.isEmpty() || surnameText.isEmpty()) {
+            Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show()
             return
         }
 
-        var emailInUse=false
-        var usernameInUse=false
+        userRegisterLoading.visibility = View.VISIBLE
 
-        ref.child("users").addListenerForSingleValueEvent(object : ValueEventListener{
-            override fun onDataChange(snapshot: DataSnapshot) {
-                    for(user in snapshot!!.children){
+        // Call the suspend function from within a coroutine scope
+        lifecycleScope.launch {
+            val isRegistered = viewModel.performRegister(emailText, passText, nameText, usernameText, surnameText)
+            userRegisterLoading.visibility = View.GONE
 
-                        var readUser=user.getValue(Users::class.java)
-                        if(readUser!!.email.equals(emailText)){
-                            Toast.makeText(this@RegisterActivity,"Email is in use!",Toast.LENGTH_SHORT).show()
-                            emailInUse=true
-                            userRegisterLoading.visibility=View.GONE
-                            break
-                        }
-                        else if(readUser!!.user_name!!.equals(usernameText)){
-                            Toast.makeText(this@RegisterActivity,"Username is in use!",Toast.LENGTH_SHORT).show()
-                            usernameInUse=true
-                            userRegisterLoading.visibility=View.GONE
-                            break
-                        }
-
-                    }
-
-                    if(emailInUse==false && usernameInUse==false ){
-
-                        auth.createUserWithEmailAndPassword(emailText, passText)
-                            .addOnCompleteListener(this@RegisterActivity) { task ->
-                                if (task.isSuccessful) {
-                                    auth.currentUser?.sendEmailVerification()
-                                        ?.addOnCompleteListener{
-                                            Toast.makeText(this@RegisterActivity, "Please verify your email!", Toast.LENGTH_SHORT).show()
-                                            saveData()
-                                        }
-                                        ?.addOnFailureListener {
-                                            Toast.makeText(this@RegisterActivity, it.toString(), Toast.LENGTH_SHORT).show()
-                                        }
-
-                                } else {
-                                    userRegisterLoading.visibility=View.GONE
-                                    Toast.makeText(this@RegisterActivity, "Registration failed.", Toast.LENGTH_SHORT).show()
-                                }
-                            }
-
-                    }
+            if (isRegistered) {
+                Toast.makeText(this@RegisterActivity, "Registration successful.", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this@RegisterActivity, "Registration failed.", Toast.LENGTH_SHORT).show()
             }
-
-            override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(this@RegisterActivity, error.toString(), Toast.LENGTH_SHORT).show()
-            }
-        })
+        }
     }
-
     private fun saveData(){
         val user = auth.currentUser
         val userID = user!!.uid

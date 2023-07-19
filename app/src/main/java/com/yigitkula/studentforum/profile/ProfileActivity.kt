@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.button.MaterialButton
 import com.google.firebase.auth.FirebaseAuth
@@ -21,6 +22,7 @@ import com.yigitkula.studentforum.model.Users
 import com.yigitkula.studentforum.utils.BottomNavigationViewHelper
 import com.yigitkula.studentforum.utils.EventbusDataEvents
 import com.yigitkula.studentforum.utils.UniversalImageLoader
+import com.yigitkula.studentforum.viewModel.ProfileViewModel
 import de.hdodenhof.circleimageview.CircleImageView
 import org.greenrobot.eventbus.EventBus
 
@@ -45,6 +47,7 @@ class ProfileActivity : AppCompatActivity() {
     lateinit var mUser:FirebaseUser
     private lateinit var ref: DatabaseReference
     private lateinit var authListener: FirebaseAuth.AuthStateListener
+    private lateinit var profileViewModel: ProfileViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_profile)
@@ -66,12 +69,46 @@ class ProfileActivity : AppCompatActivity() {
         mUser=auth.currentUser!!
         ref=FirebaseDatabase.getInstance().reference
 
+        profileViewModel = ViewModelProvider(this)[ProfileViewModel::class.java]
+
+        profileViewModel.userData.observe(this) { userData ->
+            userData?.let {
+                tvUsername.text = it.user_name
+                tvName.text = it.name
+                tvSurname.text = it.surname
+                tvSchool.text = it.user_detail?.school
+                tvDept.text = it.user_detail?.departmant
+                tvRank.text = it.user_detail?.rank.toString()
+                it.user_detail?.profile_picture?.let { it1 ->
+                    UniversalImageLoader.setImage(
+                        it1,
+                        circleProfileImg,
+                        progressBarProfilePicture,
+                        ""
+                    )
+                }
+            }
+        }
+
+        profileViewModel.loading.observe(this) { isLoading ->
+            if (isLoading) {
+                // Veriler yüklenirken yapılacak işlemler
+                buttonProfileEdit.isEnabled = false
+                buttonSettings.isEnabled = false
+            } else {
+                // Veriler yüklendikten sonra yapılacak işlemler
+                buttonProfileEdit.isEnabled = true
+                buttonSettings.isEnabled = true
+            }
+        }
+        profileViewModel.getUserData(mUser.uid)
+
+
         initImageLoader()
 
         setupNavigationView()
         setupButtons()
 
-        getUserData()
 
         buttonProfileEdit.setOnClickListener {
             profileRoot.visibility=View.GONE
@@ -89,38 +126,7 @@ class ProfileActivity : AppCompatActivity() {
 
     }
 
-    private fun getUserData(){
 
-        buttonProfileEdit.isEnabled=false
-        buttonSettings.isEnabled=false
-
-
-        ref.child("users").child(mUser.uid).addValueEventListener(object: ValueEventListener{
-            override fun onDataChange(snapshot: DataSnapshot) {
-
-                var readUserData= snapshot.getValue(Users::class.java)
-
-                EventBus.getDefault().postSticky(EventbusDataEvents.SendUserInformation(readUserData!!))
-                buttonProfileEdit.isEnabled=true
-                buttonSettings.isEnabled=true
-
-                tvUsername.setText(readUserData!!.user_name)
-                tvName.setText(readUserData!!.name)
-                tvSurname.setText(readUserData!!.surname)
-                tvSchool.setText(readUserData!!.user_detail!!.school)
-                tvDept.setText(readUserData!!.user_detail!!.departmant)
-                tvRank.setText(readUserData!!.user_detail!!.rank.toString())
-
-               var imgUrl = readUserData.user_detail!!.profile_picture!!
-                UniversalImageLoader.setImage(imgUrl,circleProfileImg,progressBarProfilePicture,"")
-
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-
-            }
-        })
-    }
     fun setupNavigationView(){
         BottomNavigationViewHelper.setupNavigation(this,bottomNavigationView)
         var menu = bottomNavigationView.menu

@@ -1,15 +1,13 @@
-package com.yigitkula.studentforum.viewModel.Home
+package com.yigitkula.studentforum.viewModel
 
 import android.app.Application
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.yigitkula.studentforum.model.Post
-import com.yigitkula.studentforum.viewModel.BaseViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext

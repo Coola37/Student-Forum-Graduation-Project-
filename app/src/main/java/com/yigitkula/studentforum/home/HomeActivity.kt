@@ -17,7 +17,7 @@ import com.yigitkula.studentforum.model.Post
 import com.yigitkula.studentforum.utils.BottomNavigationViewHelper
 import com.yigitkula.studentforum.utils.EventbusDataEvents
 import com.yigitkula.studentforum.view.QuestionActivity
-import com.yigitkula.studentforum.viewModel.Home.HomeViewModel
+import com.yigitkula.studentforum.viewModel.HomeViewModel
 import org.greenrobot.eventbus.EventBus
 
 class HomeActivity : AppCompatActivity() {

@@ -1,12 +1,10 @@
 package com.yigitkula.studentforum.viewModel
 
-import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
-import com.yigitkula.studentforum.utils.PostRepository
 
 class SearchViewModel : ViewModel() {
 

@@ -13,24 +13,12 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.button.MaterialButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
 import com.yigitkula.studentforum.R
 import com.yigitkula.studentforum.home.HomeActivity
 import com.yigitkula.studentforum.loginAndRegister.LoginActivity
-import com.yigitkula.studentforum.model.Post
 import com.yigitkula.studentforum.utils.BottomNavigationViewHelper
-import com.yigitkula.studentforum.viewModel.Share.ShareViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
-import kotlinx.coroutines.withContext
-import java.text.SimpleDateFormat
-import java.util.*
+import com.yigitkula.studentforum.viewModel.ShareViewModel
 
 class ShareActivity : AppCompatActivity() {
 

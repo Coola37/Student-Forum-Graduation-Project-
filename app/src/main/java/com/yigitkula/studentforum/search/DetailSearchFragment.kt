@@ -5,10 +5,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
@@ -23,40 +22,43 @@ import com.yigitkula.studentforum.utils.EventbusDataEvents
 import com.yigitkula.studentforum.view.QuestionActivity
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
-class DetailSearchFragment : Fragment() {
+class DetailSearchFragment : Fragment(R.layout.fragment_detail_search) {
+
     private lateinit var fragmentSearchView: android.widget.SearchView
     private lateinit var recyclerViewFragment: RecyclerView
     private lateinit var adapter: MyPostsAdapter
     private lateinit var searchFragmentBackImg: ImageView
 
-    private lateinit var authListener: FirebaseAuth.AuthStateListener
-    private lateinit var ref: DatabaseReference
     private lateinit var auth: FirebaseAuth
+    private lateinit var ref: DatabaseReference
     private var coursCode: String? = null
     private var postList = mutableListOf<Post>()
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_detail_search, container, false)
+        super.onViewCreated(view, savedInstanceState)
+
         fragmentSearchView = view.findViewById(R.id.fragmentSearchView)
         recyclerViewFragment = view.findViewById(R.id.searchRecyclerViewFragment)
         searchFragmentBackImg = view.findViewById(R.id.searchFragmentBackImg)
+
         auth = Firebase.auth
         ref = FirebaseDatabase.getInstance().reference
 
         setupAuthListener()
+
+
         searchFragmentBackImg.setOnClickListener {
             requireActivity().onBackPressed()
         }
-
 
         fun filterList(text: String) {
             val filteredCourseNames = postList.filter { it.topic!!.contains(text, ignoreCase = true) }
             (recyclerViewFragment.adapter as MyPostsAdapter).filterList(text)
         }
 
-        val layoutManager = LinearLayoutManager(this.activity)
 
+        val layoutManager = LinearLayoutManager(activity)
         val postsRef = FirebaseDatabase.getInstance().getReference("posts")
         val postListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -100,35 +102,37 @@ class DetailSearchFragment : Fragment() {
         }
         postsRef.addValueEventListener(postListener)
 
-        return view
-    }
-    @Subscribe(sticky = true)
-    internal fun onPostInfoEvent(postInfo: EventbusDataEvents.GetPostCourseName){
-        coursCode = postInfo.courseName
+
 
     }
+
+
+    private fun setupAuthListener() {
+        val authListener = FirebaseAuth.AuthStateListener { p0 ->
+            val user = FirebaseAuth.getInstance().currentUser
+            if (user == null) {
+                val intent = Intent(activity, LoginActivity::class.java)
+                activity?.startActivity(intent)
+                activity?.finish()
+            } else {
+                // User is authenticated, do nothing for now
+            }
+        }
+        auth.addAuthStateListener(authListener)
+    }
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         EventBus.getDefault().register(this)
     }
+
     override fun onDetach() {
         super.onDetach()
         EventBus.getDefault().unregister(this)
     }
-    private fun setupAuthListener() {
-        authListener = object : FirebaseAuth.AuthStateListener {
-            override fun onAuthStateChanged(p0: FirebaseAuth) {
-                var user = FirebaseAuth.getInstance().currentUser
-                if (user == null) {
 
-                    val intent = Intent(activity, LoginActivity::class.java)
-                    activity!!.startActivity(intent)
-                    activity!!.finish()
-
-                } else {
-                    return
-                }
-            }
-        }
+    @Subscribe(sticky = true)
+    internal fun onPostInfoEvent(postInfo: EventbusDataEvents.GetPostCourseName) {
+        coursCode = postInfo.courseName
     }
 }

@@ -1,12 +1,26 @@
-# Student-Forum-Graduation-Project-
+# Student Forum
+
+## Purpose </h>
+
+You can get information from your friends about the problem you have with the course with one click wherever there is mobile internet.
 
 
-![questionView](https://github.com/Coola37/Student-Forum-Graduation-Project-/assets/110453767/49f07d84-a243-4ecd-ba9c-a44bd9e9b16a)
-![register](https://github.com/Coola37/Student-Forum-Graduation-Project-/assets/110453767/e4613ef6-62b1-41a7-8f0f-409707f5ced3)
-![share](https://github.com/Coola37/Student-Forum-Graduation-Project-/assets/110453767/55f52365-b64b-46ac-8213-0aad30228433)
-![slide feedback](https://github.com/Coola37/Student-Forum-Graduation-Project-/assets/110453767/49d036f0-50c9-4b9e-a42c-0b18e7a5be2b)
-![detail search](https://github.com/Coola37/Student-Forum-Graduation-Project-/assets/110453767/405f76ad-65f3-402a-bdb9-793a0b5346b9)
-![home](https://github.com/Coola37/Student-Forum-Graduation-Project-/assets/110453767/981c2a23-eef3-4b50-9cf5-422b02c290bf)
-![login](https://github.com/Coola37/Student-Forum-Graduation-Project-/assets/110453767/6885b429-a41d-4963-983d-03ed63904fff)
-![notification uygulama kapalıyken](https://github.com/Coola37/Student-Forum-Graduation-Project-/assets/110453767/ebecdf26-cbae-4f0b-ac46-eb56804badac)
-![profile](https://github.com/Coola37/Student-Forum-Graduation-Project-/assets/110453767/741c8ddc-cda0-4a8e-991a-482f005ecb55)
+Screenshoot
+
+![login](https://github.com/Coola37/Student-Forum-Graduation-Project-/assets/110453767/9ccafce5-7db2-4314-8d7d-c1a5cf364857)
+![profile](https://github.com/Coola37/Student-Forum-Graduation-Project-/assets/110453767/2994ab17-7cb1-458b-86a5-c6caa5759709)
+![questionView](https://github.com/Coola37/Student-Forum-Graduation-Project-/assets/110453767/a07d49b9-44ef-4e4e-af68-712acc310e3b)
+![register](https://github.com/Coola37/Student-Forum-Graduation-Project-/assets/110453767/cb1556a9-5dd6-4343-b24b-b87f780f924d)
+![search](https://github.com/Coola37/Student-Forum-Graduation-Project-/assets/110453767/4ca691dc-3fa8-4446-bf05-6fb01b00c198)
+![share](https://github.com/Coola37/Student-Forum-Graduation-Project-/assets/110453767/17da1573-880b-41f7-887d-d0e8f530c430)
+![slide feedback](https://github.com/Coola37/Student-Forum-Graduation-Project-/assets/110453767/304ccd13-e0aa-46af-adec-0f4f1481a2f0)
+![notification uygulama kapalıyken](https://github.com/Coola37/Student-Forum-Graduation-Project-/assets/110453767/5dc48565-6f23-4856-99f5-33e58c97e8b2)
+
+## Libraries and tools </h2>
+
+ Viewmodel </p>
+Databinding</p>
+Coroutine</p>
+Firebase Realtime Database, Cloud Function, Authentication,</p>
+Greenrobot Evenbust</p>
+Universel Image Loader
